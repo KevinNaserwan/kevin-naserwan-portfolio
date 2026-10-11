@@ -1045,34 +1045,160 @@ section {
   flex-wrap: wrap;
 }
 
-/* Footer */
-footer {
-  padding: 60px 0 40px;
+/* Modern Architectural Executive Footer */
+.footer-executive {
+  padding: 80px 0 40px;
   border-top: 1px solid var(--border-subtle);
-  margin-top: 60px;
+  background: linear-gradient(180deg, transparent 0%, var(--bg-secondary) 100%);
+  margin-top: 80px;
+  position: relative;
+  z-index: 10;
 }
 
-.footer-content {
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.2fr 1.2fr;
+  gap: 50px;
+  margin-bottom: 60px;
+}
+
+.footer-col-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-brand-name {
+  font-size: 1.12rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.footer-tagline {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 380px;
+}
+
+.footer-status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-top: 6px;
+}
+
+.pulse-dot-green {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--status-active);
+  box-shadow: 0 0 8px var(--status-active);
+  animation: pulse-dot 2.5s infinite;
+}
+
+.footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer-heading {
+  font-size: 0.82rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.footer-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.footer-list a {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  display: inline-block;
+}
+
+.footer-list a:hover {
+  color: var(--text-primary);
+  transform: translateX(3px);
+}
+
+.footer-hire-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--tag-bg);
+  border: 1px solid var(--tag-border);
+  font-size: 0.74rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+}
+
+.footer-bottom-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.86rem;
+  padding-top: 30px;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.84rem;
   color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-.footer-links {
-  display: flex;
-  gap: 20px;
+.footer-copyright {
+  max-width: 680px;
+  line-height: 1.5;
 }
 
-.footer-links a {
+.footer-back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-.footer-links a:hover {
+.footer-back-to-top:hover {
   color: var(--text-primary);
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+}
+
+.footer-back-to-top svg {
+  transition: transform 0.2s ease;
+}
+
+.footer-back-to-top:hover svg {
+  transform: translateY(-2px);
 }
 
 /* Modal for Project Case Sheet Zoom */
@@ -1245,9 +1371,14 @@ footer {
     display: none;
   }
 
-  .footer-content {
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .footer-bottom-bar {
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     text-align: center;
   }
 }
