@@ -1,4 +1,4 @@
-// Ambient 3D Particle/Mesh Canvas (Ultra-clean, zero AI-slop, subtle interactive movement)
+// Ambient 3D Particle/Mesh Canvas (Ultra-clean, zero AI-slop, kinetic physics)
 const canvas = document.getElementById('ambient-canvas');
 const ctx = canvas.getContext('2d');
 
@@ -14,15 +14,15 @@ function resize() {
 
 function initParticles() {
   particles = [];
-  const count = Math.floor((width * height) / 14000);
+  const count = Math.floor((width * height) / 13000);
   for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      radius: Math.random() * 1.5 + 0.8,
-      alpha: Math.random() * 0.25 + 0.1
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      radius: Math.random() * 1.6 + 0.8,
+      alpha: Math.random() * 0.28 + 0.12
     });
   }
 }
@@ -41,7 +41,7 @@ function animate() {
 
   const isLight = document.documentElement.getAttribute('data-theme') === 'light';
   const particleColor = isLight ? 'rgba(0, 0, 0, ' : 'rgba(255, 255, 255, ';
-  const lineColor = isLight ? 'rgba(0, 0, 0, 0.035)' : 'rgba(255, 255, 255, 0.035)';
+  const lineColor = isLight ? 'rgba(0, 0, 0, 0.04)' : 'rgba(255, 255, 255, 0.04)';
 
   // Draw subtle connection lines between close particles
   for (let i = 0; i < particles.length; i++) {
@@ -50,12 +50,12 @@ function animate() {
       const dy = particles[i].y - particles[j].y;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < 110) {
+      if (dist < 115) {
         ctx.beginPath();
         ctx.moveTo(particles[i].x, particles[i].y);
         ctx.lineTo(particles[j].x, particles[j].y);
         ctx.strokeStyle = lineColor;
-        ctx.lineWidth = 0.7;
+        ctx.lineWidth = 0.8;
         ctx.stroke();
       }
     }
@@ -75,10 +75,10 @@ function animate() {
     const mdx = p.x - mouse.x;
     const mdy = p.y - mouse.y;
     const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-    if (mdist < 140) {
-      const force = (140 - mdist) / 140;
-      p.x += (mdx / mdist) * force * 1.5;
-      p.y += (mdy / mdist) * force * 1.5;
+    if (mdist < 150) {
+      const force = (150 - mdist) / 150;
+      p.x += (mdx / mdist) * force * 1.8;
+      p.y += (mdy / mdist) * force * 1.8;
     }
 
     ctx.beginPath();
@@ -101,12 +101,55 @@ const revealObserver = new IntersectionObserver((entries) => {
     }
   });
 }, {
-  threshold: 0.12,
+  threshold: 0.1,
   rootMargin: '0px 0px -40px 0px'
 });
 
 document.querySelectorAll('.reveal').forEach(el => {
   revealObserver.observe(el);
+});
+
+// Interactive 3D Card Tilt for Portrait with Realistic Kinetic Physics
+const portraitCard = document.querySelector('.portrait-card');
+if (portraitCard) {
+  portraitCard.addEventListener('mousemove', (e) => {
+    const rect = portraitCard.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((y - centerY) / centerY) * -12;
+    const rotateY = ((x - centerX) / centerX) * 12;
+    
+    portraitCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.025, 1.025, 1.025)`;
+  });
+
+  portraitCard.addEventListener('mouseleave', () => {
+    portraitCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+  });
+}
+
+// Interactive 3D Tilt for Featured Project Cards
+document.querySelectorAll('.project-card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((y - centerY) / centerY) * -4;
+    const rotateY = ((x - centerX) / centerX) * 4;
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+  });
 });
 
 // Theme Toggle (Light / Dark)
@@ -123,29 +166,7 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('kevin-theme', next);
 });
 
-// Interactive 3D Card Tilt for Portrait with Smooth Spring Physics
-const portraitCard = document.querySelector('.portrait-card');
-if (portraitCard) {
-  portraitCard.addEventListener('mousemove', (e) => {
-    const rect = portraitCard.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
-    
-    portraitCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.025, 1.025, 1.025)`;
-  });
-
-  portraitCard.addEventListener('mouseleave', () => {
-    portraitCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-  });
-}
-
-// Modal zoom for portfolio projects
+// Modal Zoom for Case Study Sheets
 const modal = document.getElementById('project-modal');
 const modalImg = document.getElementById('modal-img');
 const modalTitle = document.getElementById('modal-title');
@@ -187,6 +208,14 @@ if (modal) {
     }
   });
 }
+
+// Escape key to close modal
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
 
 // Smooth active link highlight on scroll
 const sections = document.querySelectorAll('section');
