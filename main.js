@@ -93,6 +93,22 @@ function animate() {
 resize();
 animate();
 
+// Intersection Observer for Smooth Scroll Reveal Animations
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('revealed');
+    }
+  });
+}, {
+  threshold: 0.12,
+  rootMargin: '0px 0px -40px 0px'
+});
+
+document.querySelectorAll('.reveal').forEach(el => {
+  revealObserver.observe(el);
+});
+
 // Theme Toggle (Light / Dark)
 const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
@@ -107,7 +123,7 @@ themeToggle.addEventListener('click', () => {
   localStorage.setItem('kevin-theme', next);
 });
 
-// Interactive 3D Card Tilt for Portrait
+// Interactive 3D Card Tilt for Portrait with Smooth Spring Physics
 const portraitCard = document.querySelector('.portrait-card');
 if (portraitCard) {
   portraitCard.addEventListener('mousemove', (e) => {
@@ -118,10 +134,10 @@ if (portraitCard) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -7;
-    const rotateY = ((x - centerX) / centerX) * 7;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
     
-    portraitCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    portraitCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.025, 1.025, 1.025)`;
   });
 
   portraitCard.addEventListener('mouseleave', () => {
@@ -136,8 +152,12 @@ const modalTitle = document.getElementById('modal-title');
 const modalDesc = document.getElementById('modal-desc');
 const modalClose = document.getElementById('modal-close');
 
-document.querySelectorAll('.project-card').forEach(card => {
-  card.addEventListener('click', () => {
+document.querySelectorAll('.project-btn-sheet').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const card = btn.closest('.project-card');
+    if (!card) return;
+
     const title = card.getAttribute('data-title');
     const desc = card.getAttribute('data-desc');
     const img = card.getAttribute('data-modal-img');
