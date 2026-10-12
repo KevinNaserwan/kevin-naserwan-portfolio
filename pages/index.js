@@ -6,8 +6,12 @@ export default function Home({ htmlContent }) {
   return (
     <>
       <Head>
-        <title>Kevin Putrayudha Naserwan — Software Engineer & AI Systems</title>
+        <title>Kevin Putrayudha Naserwan — Software Engineer &amp; AI Systems</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="Portfolio of Kevin Putrayudha Naserwan. Application Developer at PT Bukit Asam (Persero) Tbk. Specializing in high-throughput backend systems, distributed architectures, and AI platform engineering." />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="alternate icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>
       <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
     </>
