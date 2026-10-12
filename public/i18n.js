@@ -39,6 +39,12 @@ const i18nData = {
     "about.award3_desc": "Engineered enterprise backend integrations with SAP ERP, real-time logistics tracking, and automated transactional pipelines for PT Bukit Asam (Persero) Tbk.",
 
     // Projects
+        "projects.tab_all": "All Projects",
+    "projects.tab_moneysite": "Moneysite & Portals",
+    "projects.tab_webapps": "Web-Based Apps",
+    "projects.tab_tools": "Tools & Cloud Telemetry",
+    "projects.page_prev": "← Previous",
+    "projects.page_next": "Next →",
     "projects.label": "Selected Works",
     "projects.title": "Production Systems & Real Client Solutions",
     "projects.subtitle": "Real platforms engineered for public transportation, government analytics, Islamic education institutes, and municipal digital services.",
@@ -218,6 +224,12 @@ const i18nData = {
     "about.award3_desc": "Merancang integrasi backend enterprise dengan SAP ERP, pelacakan logistik real-time, dan otomasi pipeline transaksi untuk PT Bukit Asam (Persero) Tbk.",
 
     // Projects
+        "projects.tab_all": "Semua Proyek",
+    "projects.tab_moneysite": "Moneysite & Portal",
+    "projects.tab_webapps": "Aplikasi Web (Web Apps)",
+    "projects.tab_tools": "Tools & Telemetri Cloud",
+    "projects.page_prev": "← Sebelumnya",
+    "projects.page_next": "Berikutnya →",
     "projects.label": "Karya Pilihan",
     "projects.title": "Sistem Produksi & Solusi Klien Riil",
     "projects.subtitle": "Platform nyata yang dirancang untuk transportasi publik, analitik pemerintah, lembaga pendidikan Islam, dan layanan digital daerah.",
@@ -397,6 +409,12 @@ const i18nData = {
     "about.award3_desc": "为 PT Bukit Asam Tbk 构建与 SAP ERP 的企业后端集成、实时物流追踪及自动化交易流水线。",
 
     // Projects
+        "projects.tab_all": "全部项目",
+    "projects.tab_moneysite": "商业官网与门户",
+    "projects.tab_webapps": "Web 业务系统应用",
+    "projects.tab_tools": "工具与云端遥测",
+    "projects.page_prev": "← 上一页",
+    "projects.page_next": "下一页 →",
     "projects.label": "代表作品",
     "projects.title": "生产级运行系统与真实客户案例",
     "projects.subtitle": "涵盖公共轨道交通、智慧城市政府分析、伊斯兰教育学院与司法数字化服务等实际平台。",

@@ -217,6 +217,119 @@ window.addEventListener('keydown', (e) => {
   }
 });
 
+// Projects Category Filtering & Responsive Pagination
+function initProjectsFilterAndPagination() {
+  const filterBtns = document.querySelectorAll('.project-tab-btn');
+  const projectCards = Array.from(document.querySelectorAll('.project-card'));
+  const paginationContainer = document.getElementById('projects-pagination');
+  const pageNumbersContainer = document.getElementById('page-numbers');
+  const prevBtn = document.getElementById('page-prev');
+  const nextBtn = document.getElementById('page-next');
+
+  if (!projectCards.length || !paginationContainer) return;
+
+  let currentCategory = 'all';
+  let currentPage = 1;
+  const itemsPerPage = 4;
+
+  function renderProjects() {
+    // 1. Filter cards
+    const filteredCards = projectCards.filter(card => {
+      const category = card.getAttribute('data-category');
+      return currentCategory === 'all' || category === currentCategory;
+    });
+
+    const totalPages = Math.ceil(filteredCards.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    // 2. Hide all cards first, then show current page slice
+    projectCards.forEach(card => {
+      card.style.display = 'none';
+    });
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const visibleCards = filteredCards.slice(startIndex, endIndex);
+
+    visibleCards.forEach(card => {
+      card.style.display = 'flex';
+    });
+
+    // 3. Render pagination
+    if (filteredCards.length <= itemsPerPage) {
+      paginationContainer.style.display = 'none';
+    } else {
+      paginationContainer.style.display = 'flex';
+    }
+
+    if (pageNumbersContainer) {
+      pageNumbersContainer.innerHTML = '';
+      for (let i = 1; i <= totalPages; i++) {
+        const numBtn = document.createElement('button');
+        numBtn.className = `page-num ${i === currentPage ? 'active' : ''}`;
+        numBtn.textContent = i;
+        numBtn.addEventListener('click', () => {
+          currentPage = i;
+          renderProjects();
+          scrollToProjects();
+        });
+        pageNumbersContainer.appendChild(numBtn);
+      }
+    }
+
+    if (prevBtn) {
+      prevBtn.disabled = currentPage === 1;
+    }
+    if (nextBtn) {
+      nextBtn.disabled = currentPage === totalPages;
+    }
+  }
+
+  function scrollToProjects() {
+    const projectsSection = document.getElementById('projects');
+    if (projectsSection) {
+      const topPos = projectsSection.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({ top: topPos, behavior: 'smooth' });
+    }
+  }
+
+  // Filter tab click handlers
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.getAttribute('data-filter') || 'all';
+      currentPage = 1;
+      renderProjects();
+    });
+  });
+
+  // Prev / Next click handlers
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderProjects();
+        scrollToProjects();
+      }
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      currentPage++;
+      renderProjects();
+      scrollToProjects();
+    });
+  }
+
+  // Initial render
+  renderProjects();
+}
+
+initProjectsFilterAndPagination();
+
 // Smooth active link highlight on scroll
 const sections = document.querySelectorAll('section');
 const navLinks = document.querySelectorAll('.nav-link');
