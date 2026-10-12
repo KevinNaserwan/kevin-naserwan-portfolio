@@ -309,25 +309,28 @@ function updateDynamicRateAmounts(lang) {
   if (!t1AmountEl || !t2AmountEl || !t3AmountEl) return;
 
   if (lang === 'en') {
+    // International market standard calibration:
+    // Software engineering advisory internationally typically benchmarks at ~$15 – $20/hr
     const rateUsd = liveExchangeRates.USD || (1 / 17893.30);
-    const hourlyUsd = Math.round(BASE_RATES_IDR.t1_hourly * rateUsd);
-    const projMinUsd = Math.round((BASE_RATES_IDR.t2_proj_min * rateUsd) / 50) * 50;
-    const projMaxUsd = Math.round((BASE_RATES_IDR.t2_proj_max * rateUsd) / 50) * 50;
-    const sprintMinUsd = Math.round((BASE_RATES_IDR.t3_sprint_min * rateUsd) / 10) * 10;
-    const sprintMaxUsd = Math.round((BASE_RATES_IDR.t3_sprint_max * rateUsd) / 10) * 10;
+    const hourlyUsd = Math.max(15, Math.round(BASE_RATES_IDR.t1_hourly * rateUsd * 1.8));
+    const projMinUsd = Math.round((BASE_RATES_IDR.t2_proj_min * rateUsd * 1.5) / 50) * 50;
+    const projMaxUsd = Math.round((BASE_RATES_IDR.t2_proj_max * rateUsd * 1.5) / 50) * 50;
+    const sprintMinUsd = Math.round((BASE_RATES_IDR.t3_sprint_min * rateUsd * 1.6) / 10) * 10;
+    const sprintMaxUsd = Math.round((BASE_RATES_IDR.t3_sprint_max * rateUsd * 1.6) / 10) * 10;
 
-    t1AmountEl.textContent = `$${hourlyUsd || 8}`;
+    t1AmountEl.textContent = `$${hourlyUsd}`;
     t2AmountEl.textContent = `$${projMinUsd.toLocaleString()} – $${projMaxUsd.toLocaleString()}`;
     t3AmountEl.textContent = `$${sprintMinUsd.toLocaleString()} – $${sprintMaxUsd.toLocaleString()}`;
   } else if (lang === 'zh') {
+    // East Asia market calibration:
     const rateCny = liveExchangeRates.CNY || (6.7003 / 17893.30);
-    const hourlyCny = Math.round(BASE_RATES_IDR.t1_hourly * rateCny);
-    const projMinCny = Math.round((BASE_RATES_IDR.t2_proj_min * rateCny) / 100) * 100;
-    const projMaxCny = Math.round((BASE_RATES_IDR.t2_proj_max * rateCny) / 100) * 100;
-    const sprintMinCny = Math.round((BASE_RATES_IDR.t3_sprint_min * rateCny) / 100) * 100;
-    const sprintMaxCny = Math.round((BASE_RATES_IDR.t3_sprint_max * rateCny) / 100) * 100;
+    const hourlyCny = Math.max(80, Math.round(BASE_RATES_IDR.t1_hourly * rateCny * 1.4));
+    const projMinCny = Math.round((BASE_RATES_IDR.t2_proj_min * rateCny * 1.3) / 100) * 100;
+    const projMaxCny = Math.round((BASE_RATES_IDR.t2_proj_max * rateCny * 1.3) / 100) * 100;
+    const sprintMinCny = Math.round((BASE_RATES_IDR.t3_sprint_min * rateCny * 1.3) / 100) * 100;
+    const sprintMaxCny = Math.round((BASE_RATES_IDR.t3_sprint_max * rateCny * 1.3) / 100) * 100;
 
-    t1AmountEl.textContent = `¥${hourlyCny || 56}`;
+    t1AmountEl.textContent = `¥${hourlyCny}`;
     t2AmountEl.textContent = `¥${projMinCny.toLocaleString()} – ¥${projMaxCny.toLocaleString()}`;
     t3AmountEl.textContent = `¥${sprintMinCny.toLocaleString()} – ¥${sprintMaxCny.toLocaleString()}`;
   }
