@@ -1,43 +1,28 @@
-# Kevin Putrayudha Naserwan - Modern Next.js Portfolio
+# Kevin Putrayudha Naserwan - Personal Portfolio Website
 
-[![Next.js 14](https://img.shields.io/badge/Next.js-14.2-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-%23007ACC?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-%2338B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Framer Motion](https://img.shields.io/badge/Framer_Motion-11.3-%230055FF?style=flat-square&logo=framer&logoColor=white)](https://www.framer.com/motion/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC.svg)](https://tailwindcss.com/)
+[![Lucide Icons](https://img.shields.io/badge/Icons-Lucide-F56565.svg)](https://lucide.dev/)
 
-Ultra-clean, modern, and high-performance personal portfolio website built on **Next.js 14 (App Router)**, **TypeScript**, **Tailwind CSS**, and **Framer Motion**.
+Ultra-clean, modern, and high-performance developer portfolio website for **Kevin Putrayudha Naserwan** — Application Developer at PT Bukit Asam (Persero) Tbk, Distributed Systems Engineer, and Applied AI Researcher.
 
-## 🚀 Key Features & Architecture
-- **Modern App Router**: Modular components (`Hero`, `About`, `Experience`, `Projects`, `Skills`, `Contact`) structured under `src/components/`.
-- **Dynamic Physics Motion**: Powered by `framer-motion` for fluid scroll reveals, ambient avatar pulse glowing, and interactive typing effects.
-- **Strongly-Typed Centralized Data**: All career history, flagship repositories, metrics, and skill matrices are managed in `src/data/portfolioData.ts`.
-- **Official GitHub Avatar Integration**: Real-time avatar from `https://avatars.githubusercontent.com/u/94282343?v=4`.
-- **SEO & Core Web Vitals Optimized**: Next.js optimized metadata, high-efficiency SVG icons via `lucide-react`, and zero layout shift.
+## ✨ Features
+- **Modern Glassmorphism Design**: Custom dark-mode palette, glowing borders, and backdrop blurs.
+- **Micro-Interactions & Motion**: Typing animations, floating avatar pulse effects, and smooth scroll reveal via IntersectionObserver.
+- **Comprehensive Showcase**:
+  - Direct integration with live GitHub photo avatar.
+  - Professional career timeline (PT Bukit Asam, HashMicro, Meets Indonesia, R17 Group, Suitmedia).
+  - Flagship open-source projects (Barça 2027 tracker, .NET telemetry engine, Agri AI, Peatland Wildfire AI).
+  - Technical skills matrix & interactive contact form.
 
-## 🛠️ Tech Stack
-- **Framework**: Next.js 14 (App Router, Server Components)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS & Custom Glassmorphism
-- **Animations**: Framer Motion
-- **Icons**: Lucide React
-
-## 💻 Local Development
+## 🚀 Live Preview / Local Run
+Simply open `index.html` in any web browser or serve with Python:
 ```bash
-# Clone the repository
-git clone git@github.com:KevinNaserwan/kevin-naserwan-portfolio.git
-cd kevin-naserwan-portfolio
-
-# Install dependencies (Node.js 18+ or 20 LTS recommended)
-npm install
-
-# Start local development server
-npm run dev
+python3 -m http.server 8080
 ```
-
-Visit [http://localhost:3000](http://localhost:3000) to view the live interactive portfolio.
+Then visit `http://localhost:8080`.
 
 ## 👤 Author
-- **Kevin Putrayudha Naserwan**
-- **Role**: Application Developer at PT Bukit Asam (Persero) Tbk
-- **GitHub**: [@KevinNaserwan](https://github.com/KevinNaserwan)
+- **Kevin Putrayudha Naserwan** ([@KevinNaserwan](https://github.com/KevinNaserwan))
+- **Email**: kevinnaserwan@gmail.com
 - **LinkedIn**: [linkedin.com/in/kevinnaserwan](https://www.linkedin.com/in/kevinnaserwan/)
