@@ -250,6 +250,89 @@ const langLabels = {
   zh: 'ZH'
 };
 
+// Base Rate Values in IDR (Kevin's baseline)
+const BASE_RATES_IDR = {
+  t1_hourly: 150000,
+  t2_proj_min: 10000000,
+  t2_proj_max: 35000000,
+  t3_sprint_min: 6000000,
+  t3_sprint_max: 8000000
+};
+
+// Cached exchange rates (defaults to market baseline 1 USD = 17,893 IDR, 1 USD = 6.70 CNY)
+let liveExchangeRates = {
+  USD: 1 / 17893.30,
+  CNY: 6.7003 / 17893.30
+};
+
+// Fetch real-time exchange rates in the background
+async function fetchLiveExchangeRates() {
+  try {
+    const cached = localStorage.getItem('kevin-rates-cache');
+    const cachedTime = localStorage.getItem('kevin-rates-time');
+    // Cache for 6 hours
+    if (cached && cachedTime && (Date.now() - parseInt(cachedTime)) < 6 * 3600 * 1000) {
+      liveExchangeRates = JSON.parse(cached);
+      return;
+    }
+
+    const res = await fetch('https://open.er-api.com/v6/latest/USD');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.rates && data.rates.IDR) {
+        const idrRate = data.rates.IDR;
+        const cnyRate = data.rates.CNY || 6.70;
+        liveExchangeRates = {
+          USD: 1 / idrRate,
+          CNY: cnyRate / idrRate
+        };
+        localStorage.setItem('kevin-rates-cache', JSON.stringify(liveExchangeRates));
+        localStorage.setItem('kevin-rates-time', Date.now().toString());
+
+        // Refresh current active view with newly fetched live exchange rates
+        const currentLang = document.documentElement.getAttribute('lang') || 'id';
+        if (currentLang !== 'id') {
+          updateDynamicRateAmounts(currentLang);
+        }
+      }
+    }
+  } catch (err) {
+    // Graceful fallback to default baseline
+  }
+}
+
+function updateDynamicRateAmounts(lang) {
+  const t1AmountEl = document.querySelector('[data-i18n="rates.t1_rate_amount"]');
+  const t2AmountEl = document.querySelector('[data-i18n="rates.t2_rate_amount"]');
+  const t3AmountEl = document.querySelector('[data-i18n="rates.t3_rate_amount"]');
+
+  if (!t1AmountEl || !t2AmountEl || !t3AmountEl) return;
+
+  if (lang === 'en') {
+    const rateUsd = liveExchangeRates.USD || (1 / 17893.30);
+    const hourlyUsd = Math.round(BASE_RATES_IDR.t1_hourly * rateUsd);
+    const projMinUsd = Math.round((BASE_RATES_IDR.t2_proj_min * rateUsd) / 50) * 50;
+    const projMaxUsd = Math.round((BASE_RATES_IDR.t2_proj_max * rateUsd) / 50) * 50;
+    const sprintMinUsd = Math.round((BASE_RATES_IDR.t3_sprint_min * rateUsd) / 10) * 10;
+    const sprintMaxUsd = Math.round((BASE_RATES_IDR.t3_sprint_max * rateUsd) / 10) * 10;
+
+    t1AmountEl.textContent = `$${hourlyUsd || 8}`;
+    t2AmountEl.textContent = `$${projMinUsd.toLocaleString()} – $${projMaxUsd.toLocaleString()}`;
+    t3AmountEl.textContent = `$${sprintMinUsd.toLocaleString()} – $${sprintMaxUsd.toLocaleString()}`;
+  } else if (lang === 'zh') {
+    const rateCny = liveExchangeRates.CNY || (6.7003 / 17893.30);
+    const hourlyCny = Math.round(BASE_RATES_IDR.t1_hourly * rateCny);
+    const projMinCny = Math.round((BASE_RATES_IDR.t2_proj_min * rateCny) / 100) * 100;
+    const projMaxCny = Math.round((BASE_RATES_IDR.t2_proj_max * rateCny) / 100) * 100;
+    const sprintMinCny = Math.round((BASE_RATES_IDR.t3_sprint_min * rateCny) / 100) * 100;
+    const sprintMaxCny = Math.round((BASE_RATES_IDR.t3_sprint_max * rateCny) / 100) * 100;
+
+    t1AmountEl.textContent = `¥${hourlyCny || 56}`;
+    t2AmountEl.textContent = `¥${projMinCny.toLocaleString()} – ¥${projMaxCny.toLocaleString()}`;
+    t3AmountEl.textContent = `¥${sprintMinCny.toLocaleString()} – ¥${sprintMaxCny.toLocaleString()}`;
+  }
+}
+
 function setLanguage(lang, isManual = false) {
   if (!window.i18nData) {
     // Retry shortly if i18n script is still parsing
@@ -269,6 +352,11 @@ function setLanguage(lang, isManual = false) {
       el.innerHTML = dict[key];
     }
   });
+
+  // Calculate and apply dynamic live currency rates
+  if (lang !== 'id') {
+    updateDynamicRateAmounts(lang);
+  }
 
   // Update button label and active states
   const labelEl = document.getElementById('lang-current-label');
@@ -396,12 +484,17 @@ async function detectDefaultLanguage() {
   setLanguage('en', false);
 }
 
-// Initialize Language on Page Load & DOMContentLoaded
+// Initialize Language and Live Exchange Rates on Page Load & DOMContentLoaded
+fetchLiveExchangeRates();
 detectDefaultLanguage();
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', detectDefaultLanguage);
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchLiveExchangeRates();
+    detectDefaultLanguage();
+  });
 }
+
 
 
 
