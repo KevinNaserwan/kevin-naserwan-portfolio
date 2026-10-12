@@ -1536,7 +1536,21 @@ section {
   line-height: 1.6;
 }
 
-/* Responsive */
+/* Comprehensive Responsive Grid & Architecture Across All Viewports */
+@media (max-width: 1200px) {
+  .rates-grid {
+    gap: 20px;
+  }
+
+  .rate-card {
+    padding: 30px 24px;
+  }
+
+  .rate-price .amount {
+    font-size: 1.95rem;
+  }
+}
+
 @media (max-width: 992px) {
   .hero-grid {
     grid-template-columns: 1fr;
@@ -1564,6 +1578,7 @@ section {
   
   .portrait-card {
     max-width: 360px;
+    margin: 0 auto;
   }
 
   .timeline-item {
@@ -1571,8 +1586,24 @@ section {
     gap: 16px;
   }
 
-  .projects-grid, .oss-grid, .awards-grid, .rates-grid {
+  .projects-grid, .oss-grid, .awards-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* Tablet: 2 columns on tablet, or 1 column if narrow */
+  .rates-grid {
+    grid-template-columns: 1fr;
+    max-width: 580px;
+    margin: 0 auto;
+    gap: 24px;
+  }
+
+  .rate-card.rate-featured {
+    transform: none;
+  }
+
+  .rate-card.rate-featured:hover {
+    transform: translateY(-5px);
   }
 
   .skills-grid {
@@ -1580,13 +1611,35 @@ section {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .nav-pill {
+    padding: 6px 12px;
+  }
+
+  .nav-brand span:last-child {
+    font-size: 0.88rem;
+  }
+
   .hero-title {
-    font-size: 2.6rem;
+    font-size: 2.8rem;
   }
 
   .section-title {
-    font-size: 1.8rem;
+    font-size: 2rem;
+  }
+
+  .rates-grid {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
   }
 
   .skills-grid {
@@ -1595,6 +1648,19 @@ section {
 
   .nav-links {
     display: none;
+  }
+
+  .nav-pill {
+    max-width: calc(100vw - 32px);
+  }
+
+  .rate-card {
+    padding: 26px 20px;
+    border-radius: 20px;
+  }
+
+  .rate-price .amount {
+    font-size: 1.75rem;
   }
 
   .footer-top-grid {
@@ -1608,3 +1674,24 @@ section {
     text-align: center;
   }
 }
+
+@media (max-width: 380px) {
+  .hero-title {
+    font-size: 1.95rem;
+  }
+
+  .hero-meta {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rate-price {
+    flex-wrap: wrap;
+  }
+
+  .btn-lang {
+    padding: 0 8px;
+    font-size: 0.76rem;
+  }
+}
+

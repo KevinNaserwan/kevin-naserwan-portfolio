@@ -251,9 +251,15 @@ const langLabels = {
 };
 
 function setLanguage(lang) {
-  if (!window.i18nData || !window.i18nData[lang]) return;
+  if (!window.i18nData) {
+    // Retry shortly if i18n script is still parsing
+    setTimeout(() => setLanguage(lang), 50);
+    return;
+  }
 
   const dict = window.i18nData[lang];
+  if (!dict) return;
+
   document.documentElement.setAttribute('lang', lang);
 
   // Update text elements with data-i18n
@@ -265,11 +271,12 @@ function setLanguage(lang) {
   });
 
   // Update button label and active states
-  if (langCurrentLabel) {
-    langCurrentLabel.textContent = langLabels[lang] || 'EN';
+  const labelEl = document.getElementById('lang-current-label');
+  if (labelEl) {
+    labelEl.textContent = langLabels[lang] || 'EN';
   }
 
-  langOpts.forEach(opt => {
+  document.querySelectorAll('.lang-opt').forEach(opt => {
     if (opt.getAttribute('data-lang') === lang) {
       opt.classList.add('active');
     } else {
@@ -280,28 +287,39 @@ function setLanguage(lang) {
   localStorage.setItem('kevin-lang', lang);
 }
 
-if (langToggle && langDropdown) {
-  langToggle.addEventListener('click', (e) => {
+// Global click delegation for language toggle and options
+document.addEventListener('click', (e) => {
+  const toggleBtn = e.target.closest('#lang-toggle');
+  const dropdown = document.querySelector('.lang-dropdown');
+  const optBtn = e.target.closest('.lang-opt');
+
+  if (toggleBtn && dropdown) {
     e.stopPropagation();
-    langDropdown.classList.toggle('active');
-  });
+    dropdown.classList.toggle('active');
+    return;
+  }
 
-  document.addEventListener('click', (e) => {
-    if (!langDropdown.contains(e.target)) {
-      langDropdown.classList.remove('active');
+  if (optBtn) {
+    e.stopPropagation();
+    const lang = optBtn.getAttribute('data-lang');
+    if (lang) {
+      setLanguage(lang);
     }
-  });
-}
+    if (dropdown) dropdown.classList.remove('active');
+    return;
+  }
 
-langOpts.forEach(opt => {
-  opt.addEventListener('click', () => {
-    const lang = opt.getAttribute('data-lang');
-    setLanguage(lang);
-    if (langDropdown) langDropdown.classList.remove('active');
-  });
+  if (dropdown && !dropdown.contains(e.target)) {
+    dropdown.classList.remove('active');
+  }
 });
 
-// Initialize Language on Page Load
+// Initialize Language on Page Load & DOMContentLoaded
 const initialLang = localStorage.getItem('kevin-lang') || 'en';
 setLanguage(initialLang);
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setLanguage(initialLang));
+}
+
 

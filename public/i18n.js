@@ -500,3 +500,8 @@ const i18nData = {
     "footer.copyright": "© 2026 Kevin Putrayudha Naserwan. 坚持零 AI 水质垃圾、高品质工程标准与真实生产规模。"
   }
 };
+
+if (typeof window !== 'undefined') {
+  window.i18nData = i18nData;
+}
+
