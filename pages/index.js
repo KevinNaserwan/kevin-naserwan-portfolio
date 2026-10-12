@@ -24,9 +24,10 @@ export async function getStaticProps() {
 
   // Strip html and body tags so it renders cleanly inside Next.js layout
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-  const headMatch = html.match(/<head[^>]*>([\s\S]*)<\/head>/i);
-  
-  const content = bodyMatch ? bodyMatch[1] : html;
+  let content = bodyMatch ? bodyMatch[1] : html;
+
+  // Remove script tags inside body to prevent double execution with next/script
+  content = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
   return {
     props: {

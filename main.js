@@ -250,10 +250,10 @@ const langLabels = {
   zh: 'ZH'
 };
 
-function setLanguage(lang) {
+function setLanguage(lang, isManual = false) {
   if (!window.i18nData) {
     // Retry shortly if i18n script is still parsing
-    setTimeout(() => setLanguage(lang), 50);
+    setTimeout(() => setLanguage(lang, isManual), 50);
     return;
   }
 
@@ -284,7 +284,9 @@ function setLanguage(lang) {
     }
   });
 
-  localStorage.setItem('kevin-lang', lang);
+  if (isManual) {
+    localStorage.setItem('kevin-lang-manual', lang);
+  }
 }
 
 // Global click delegation for language toggle and options
@@ -303,7 +305,7 @@ document.addEventListener('click', (e) => {
     e.stopPropagation();
     const lang = optBtn.getAttribute('data-lang');
     if (lang) {
-      setLanguage(lang);
+      setLanguage(lang, true);
     }
     if (dropdown) dropdown.classList.remove('active');
     return;
@@ -316,35 +318,44 @@ document.addEventListener('click', (e) => {
 
 // Geolocation-Based Language Detection
 async function detectDefaultLanguage() {
-  // If user previously chose a language manually, respect user preference
-  const savedLang = localStorage.getItem('kevin-lang');
-  if (savedLang && (savedLang === 'en' || savedLang === 'id' || savedLang === 'zh')) {
-    setLanguage(savedLang);
+  // If user explicitly chose a language previously via navbar dropdown, respect it
+  const manualChoice = localStorage.getItem('kevin-lang-manual');
+  if (manualChoice && (manualChoice === 'en' || manualChoice === 'id' || manualChoice === 'zh')) {
+    setLanguage(manualChoice, false);
     return;
   }
 
-  // Quick fallback check via browser navigator.languages / language
+  // 1. Timezone heuristic (instant, 100% accurate for device location, zero network wait)
+  try {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    if (tz.includes('Jakarta') || tz.includes('Pontianak') || tz.includes('Makassar') || tz.includes('Jayapura')) {
+      setLanguage('id', false);
+      return;
+    }
+    if (tz.includes('Shanghai') || tz.includes('Urumqi') || tz.includes('Beijing') || tz.includes('Hong_Kong') || tz.includes('Taipei')) {
+      setLanguage('zh', false);
+      return;
+    }
+  } catch (e) {}
+
+  // 2. Browser language heuristic (instant)
   const browserLangs = navigator.languages || [navigator.language || ''];
-  let guessedLang = 'en';
   for (const bl of browserLangs) {
     const l = (bl || '').toLowerCase();
     if (l.startsWith('id')) {
-      guessedLang = 'id';
-      break;
+      setLanguage('id', false);
+      return;
     }
     if (l.startsWith('zh')) {
-      guessedLang = 'zh';
-      break;
+      setLanguage('zh', false);
+      return;
     }
   }
 
-  // Set initial guessed language immediately for fast render
-  setLanguage(guessedLang);
-
-  // Detect country by IP via lightweight geo APIs
+  // 3. Network IP Geolocation lookup
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = setTimeout(() => controller.abort(), 2500);
 
     const res = await fetch('https://api.country.is/', { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -352,35 +363,37 @@ async function detectDefaultLanguage() {
     if (res.ok) {
       const data = await res.json();
       const country = (data.country || '').toUpperCase();
-      let detected = 'en';
       if (country === 'ID') {
-        detected = 'id';
-      } else if (country === 'CN' || country === 'HK' || country === 'TW') {
-        detected = 'zh';
+        setLanguage('id', false);
+        return;
       }
-
-      setLanguage(detected);
+      if (country === 'CN' || country === 'HK' || country === 'TW') {
+        setLanguage('zh', false);
+        return;
+      }
+      setLanguage('en', false);
       return;
     }
   } catch (err) {
-    // Secondary fallback: ipwho.is
     try {
-      const res2 = await fetch('https://ipwho.is/?fields=country_code', { signal: AbortSignal.timeout ? AbortSignal.timeout(2000) : undefined });
+      const res2 = await fetch('https://ipwho.is/?fields=country_code');
       if (res2.ok) {
         const data2 = await res2.json();
         const country2 = (data2.country_code || '').toUpperCase();
-        let detected2 = 'en';
         if (country2 === 'ID') {
-          detected2 = 'id';
-        } else if (country2 === 'CN' || country2 === 'HK' || country2 === 'TW') {
-          detected2 = 'zh';
+          setLanguage('id', false);
+          return;
         }
-        setLanguage(detected2);
+        if (country2 === 'CN' || country2 === 'HK' || country2 === 'TW') {
+          setLanguage('zh', false);
+          return;
+        }
       }
-    } catch (e) {
-      // Fallback already active
-    }
+    } catch (e2) {}
   }
+
+  // Default fallback for international viewers
+  setLanguage('en', false);
 }
 
 // Initialize Language on Page Load & DOMContentLoaded
