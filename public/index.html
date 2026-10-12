@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kevin Putrayudha Naserwan — Software Engineer & AI Systems</title>
   <meta name="description" content="Portfolio of Kevin Putrayudha Naserwan. Application Developer at PT Bukit Asam (Persero) Tbk, former Fullstack Developer at HashMicro. Specializing in high-throughput backend systems, distributed architectures, and AI platform engineering.">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,14 +26,27 @@
         <span>Kevin Naserwan</span>
       </a>
       <ul class="nav-links">
-        <li><a href="#about" class="nav-link">About</a></li>
-        <li><a href="#projects" class="nav-link">Projects</a></li>
-        <li><a href="#experience" class="nav-link">Experience</a></li>
-        <li><a href="#skills" class="nav-link">Skills</a></li>
-        <li><a href="#rates" class="nav-link">Rates</a></li>
-        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li><a href="#about" class="nav-link" data-i18n="nav.about">About</a></li>
+        <li><a href="#projects" class="nav-link" data-i18n="nav.projects">Projects</a></li>
+        <li><a href="#experience" class="nav-link" data-i18n="nav.experience">Experience</a></li>
+        <li><a href="#skills" class="nav-link" data-i18n="nav.skills">Skills</a></li>
+        <li><a href="#rates" class="nav-link" data-i18n="nav.rates">Rates</a></li>
+        <li><a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a></li>
       </ul>
       <div class="nav-actions">
+                <!-- Language Selector (EN / ID / ZH) -->
+        <div class="lang-dropdown">
+          <button id="lang-toggle" class="btn-lang" aria-label="Change Language" title="Language">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            <span id="lang-current-label">EN</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="lang-menu" id="lang-menu">
+            <button class="lang-opt" data-lang="en">English (EN)</button>
+            <button class="lang-opt" data-lang="id">Bahasa Indonesia (ID)</button>
+            <button class="lang-opt" data-lang="zh">中文 (ZH)</button>
+          </div>
+        </div>
         <button id="theme-toggle" class="btn-icon" aria-label="Toggle Theme" title="Switch Theme">
           <svg viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="5"></circle>
@@ -62,34 +77,34 @@
         <div class="hero-content reveal">
           <div class="hero-status-pill">
             <span class="dot"></span>
-            <span>Application Developer at <strong>PT Bukit Asam (Persero) Tbk</strong></span>
+            <span data-i18n="hero.status">Application Developer at <strong>PT Bukit Asam (Persero) Tbk</strong></span>
           </div>
 
-          <h1 class="hero-title">
+          <h1 class="hero-title" data-i18n="hero.title">
             Architecting <span class="gradient-text">resilient backend systems</span> & scalable AI platforms.
           </h1>
 
-          <p class="hero-bio">
+          <p class="hero-bio" data-i18n="hero.bio">
             Hello, I am <strong>Kevin Putrayudha Naserwan</strong>. An engineer specialized in high-concurrency microservices, distributed data pipelines, and mission-critical enterprise platforms across mining, ERP, and smart transport ecosystems.
           </p>
 
           <div class="hero-cta">
-            <a href="#projects" class="btn btn-primary">View Featured Works</a>
-            <a href="mailto:kevinnaserwan@gmail.com" class="btn btn-secondary">Get In Touch</a>
+            <a href="#projects" class="btn btn-primary" data-i18n="hero.cta_projects">View Featured Works</a>
+            <a href="mailto:kevinnaserwan@gmail.com" class="btn btn-secondary" data-i18n="hero.cta_contact">Get In Touch</a>
           </div>
 
           <div class="hero-meta">
             <div class="meta-item">
               <h4>3+ Years</h4>
-              <p>Engineering Experience</p>
+              <p data-i18n="hero.exp_label">Engineering Experience</p>
             </div>
             <div class="meta-item">
               <h4>4,100+</h4>
-              <p>Pages & Systems Scaled</p>
+              <p data-i18n="hero.scale_label">Pages & Systems Scaled</p>
             </div>
             <div class="meta-item">
               <h4>Top 100</h4>
-              <p>Hackathon Koperasi Desa</p>
+              <p data-i18n="hero.hackathon_label">Hackathon Koperasi Desa</p>
             </div>
           </div>
         </div>
@@ -98,14 +113,14 @@
           <div class="portrait-glow"></div>
           <div class="portrait-card">
             <div class="portrait-badge-corner">
-              <span>● ACTIVE</span>
+              <span data-i18n="hero.portrait_badge">● ACTIVE</span>
             </div>
             <div class="portrait-img-frame">
               <img src="assets/img/kevin-portrait.png" alt="Kevin Putrayudha Naserwan" class="portrait-img" loading="eager">
             </div>
             <div class="portrait-info-overlay">
               <div class="portrait-name">Kevin Putrayudha Naserwan</div>
-              <div class="portrait-role">Full Stack & AI Platform Engineer</div>
+              <div class="portrait-role" data-i18n="hero.portrait_role">Full Stack & AI Platform Engineer</div>
             </div>
           </div>
         </div>
@@ -115,32 +130,32 @@
     <!-- About Section -->
     <section id="about">
       <div class="section-header reveal">
-        <div class="section-label">Engineering Philosophy</div>
-        <h2 class="section-title">Built with clean precision, verified by production scale.</h2>
-        <p class="section-subtitle">
+        <div class="section-label" data-i18n="about.label">Engineering Philosophy</div>
+        <h2 class="section-title" data-i18n="about.title">Built with clean precision, verified by production scale.</h2>
+        <p class="section-subtitle" data-i18n="about.subtitle">
           From modernizing mission-critical ERP microservices at state-owned mining enterprise PT Bukit Asam Tbk to migrating 4,100+ web applications at HashMicro, I focus on clean architecture, sub-second latency, and deterministic reliability.
         </p>
       </div>
 
       <div class="awards-grid">
         <div class="award-card reveal delay-1">
-          <span class="award-badge">Award & Honor</span>
-          <h3 class="award-title">Top 100 Hackathon Koperasi Desa Merah Putih</h3>
-          <p class="award-desc">
+          <span class="award-badge" data-i18n="about.award1_badge">Award & Honor</span>
+          <h3 class="award-title" data-i18n="about.award1_title">Top 100 Hackathon Koperasi Desa Merah Putih</h3>
+          <p class="award-desc" data-i18n="about.award1_desc">
             Selected among the Top 100 national innovators in building technology solutions for rural village cooperatives and digital economic empowerment across Indonesia.
           </p>
         </div>
         <div class="award-card reveal delay-2">
-          <span class="award-badge">Enterprise Scale</span>
-          <h3 class="award-title">Core Web Vitals Optimization (4,100+ Pages)</h3>
-          <p class="award-desc">
+          <span class="award-badge" data-i18n="about.award2_badge">Enterprise Scale</span>
+          <h3 class="award-title" data-i18n="about.award2_title">Core Web Vitals Optimization (4,100+ Pages)</h3>
+          <p class="award-desc" data-i18n="about.award2_desc">
             Slashed poor-performing URLs from 3,956 down to 246 via Astro SSR, asset caching with Redis, and island architecture at HashMicro.
           </p>
         </div>
         <div class="award-card reveal delay-3">
-          <span class="award-badge">Mission Critical</span>
-          <h3 class="award-title">State-Owned Enterprise Systems</h3>
-          <p class="award-desc">
+          <span class="award-badge" data-i18n="about.award3_badge">Mission Critical</span>
+          <h3 class="award-title" data-i18n="about.award3_title">State-Owned Enterprise Systems</h3>
+          <p class="award-desc" data-i18n="about.award3_desc">
             Engineered enterprise backend integrations with SAP ERP, real-time logistics tracking, and automated transactional pipelines for PT Bukit Asam (Persero) Tbk.
           </p>
         </div>
@@ -150,9 +165,9 @@
     <!-- Featured Projects (from PDF Presentation Deck + Live Direct URLs) -->
     <section id="projects">
       <div class="section-header reveal">
-        <div class="section-label">Selected Works</div>
-        <h2 class="section-title">Production Systems & Real Client Solutions</h2>
-        <p class="section-subtitle">
+        <div class="section-label" data-i18n="projects.label">Selected Works</div>
+        <h2 class="section-title" data-i18n="projects.title">Production Systems & Real Client Solutions</h2>
+        <p class="section-subtitle" data-i18n="projects.subtitle">
           Real platforms engineered for public transportation, government analytics, Islamic education institutes, and municipal digital services.
         </p>
       </div>
@@ -161,13 +176,13 @@
         <!-- Project 1: LRT Sumsel -->
         <div class="project-card reveal delay-1" data-title="LRT Sumatera Selatan — Official Portal & Route Tracking" data-desc="Public transport web platform for LRT Sumatera Selatan Kota Palembang. Delivering real-time train schedules, multi-station fare calculators, dynamic transit maps, and commuter guides." data-modal-img="assets/img/project-4.png">
           <div class="project-preview">
-            <span class="project-badge-type">Government / Transport</span>
+            <span class="project-badge-type" data-i18n="projects.p1_type">Government / Transport</span>
             <img src="assets/img/ui-lrt.png" alt="LRT Sumatera Selatan Landing Page" loading="lazy">
           </div>
           <div class="project-content">
-            <div class="project-client">Balai Pengelola Kereta Api Ringan Sumsel</div>
-            <h3 class="project-title">LRT Sumatera Selatan Official Portal</h3>
-            <p class="project-desc">
+            <div class="project-client" data-i18n="projects.p1_client">Balai Pengelola Kereta Api Ringan Sumsel</div>
+            <h3 class="project-title" data-i18n="projects.p1_title">LRT Sumatera Selatan Official Portal</h3>
+            <p class="project-desc" data-i18n="projects.p1_desc">
               Comprehensive web platform providing passengers with instant transit schedules, interactive route maps, tariff calculators, and multi-station connectivity data.
             </p>
             <div class="project-tags">
@@ -178,11 +193,11 @@
             </div>
             <div class="project-footer">
               <a href="https://lrt-sumsel.id/" target="_blank" rel="noopener noreferrer" class="project-btn-live">
-                <span>Visit Live App</span>
+                <span data-i18n="projects.btn_live">Visit Live App</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
               </a>
               <button class="project-btn-sheet">
-                <span>Architecture Sheet</span>
+                <span data-i18n="projects.btn_sheet">Architecture Sheet</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
               </button>
             </div>
@@ -192,13 +207,13 @@
         <!-- Project 2: Dishub Palembang -->
         <div class="project-card reveal delay-2" data-title="Dishub Palembang — Real-Time Parking Monitoring Dashboard" data-desc="Real-time municipal telemetry dashboard monitoring 29 active parking zones across Palembang. Features vehicle ingress/egress telemetry, hourly revenue trends, capacity utilization alerts, and administrative reporting." data-modal-img="assets/img/project-6.png">
           <div class="project-preview">
-            <span class="project-badge-type">Smart City / Analytics</span>
+            <span class="project-badge-type" data-i18n="projects.p2_type">Smart City / Analytics</span>
             <img src="assets/img/ui-dishub.png" alt="Dashboard Monitoring Parkir Dishub Palembang" loading="lazy">
           </div>
           <div class="project-content">
-            <div class="project-client">Dinas Perhubungan Kota Palembang</div>
-            <h3 class="project-title">Parking Monitoring & Revenue Analytics</h3>
-            <p class="project-desc">
+            <div class="project-client" data-i18n="projects.p2_client">Dinas Perhubungan Kota Palembang</div>
+            <h3 class="project-title" data-i18n="projects.p2_title">Parking Monitoring & Revenue Analytics</h3>
+            <p class="project-desc" data-i18n="projects.p2_desc">
               Real-time administrative analytics dashboard for municipal authorities, tracking 2,300+ daily vehicle movements, revenue charts, and zone saturation.
             </p>
             <div class="project-tags">
@@ -209,10 +224,10 @@
             </div>
             <div class="project-footer">
               <span class="project-btn-live" style="background: var(--tag-bg); color: var(--text-secondary); border: 1px solid var(--border-subtle); cursor: default;">
-                <span>Intranet Portal</span>
+                <span data-i18n="projects.p2_intranet">Intranet Portal</span>
               </span>
               <button class="project-btn-sheet">
-                <span>Architecture Sheet</span>
+                <span data-i18n="projects.btn_sheet">Architecture Sheet</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
               </button>
             </div>
@@ -222,13 +237,13 @@
         <!-- Project 3: Pengadilan Agama Muara Enim -->
         <div class="project-card reveal delay-3" data-title="Pengadilan Agama Muara Enim — Digital Visitor Book System" data-desc="Enterprise digital guest management and identity capture portal. Streamlines visitor registration with integrated webcam capture, biometric logging, digital feedback surveys, and instant administrative search." data-modal-img="assets/img/project-7.png">
           <div class="project-preview">
-            <span class="project-badge-type">Public Service / Judicial</span>
+            <span class="project-badge-type" data-i18n="projects.p3_type">Public Service / Judicial</span>
             <img src="assets/img/ui-bukutamu.png" alt="Buku Tamu Digital Pengadilan Agama Muara Enim" loading="lazy">
           </div>
           <div class="project-content">
-            <div class="project-client">Pengadilan Agama Kelas IB Muara Enim</div>
-            <h3 class="project-title">Sistem Buku Tamu Digital & Verification</h3>
-            <p class="project-desc">
+            <div class="project-client" data-i18n="projects.p3_client">Pengadilan Agama Kelas IB Muara Enim</div>
+            <h3 class="project-title" data-i18n="projects.p3_title">Digital Guest Book System & Verification</h3>
+            <p class="project-desc" data-i18n="projects.p3_desc">
               Judicial institution visitor intake platform with hardware webcam integration, instantaneous identity logging, automated queue numbers, and visitor archives.
             </p>
             <div class="project-tags">
@@ -239,11 +254,11 @@
             </div>
             <div class="project-footer">
               <a href="https://bukutamu.pa-muaraenim.go.id/" target="_blank" rel="noopener noreferrer" class="project-btn-live">
-                <span>Visit Live App</span>
+                <span data-i18n="projects.btn_live">Visit Live App</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
               </a>
               <button class="project-btn-sheet">
-                <span>Architecture Sheet</span>
+                <span data-i18n="projects.btn_sheet">Architecture Sheet</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
               </button>
             </div>
@@ -253,13 +268,13 @@
         <!-- Project 4: Ma'had Tahfidz Hidayatul Qur'an -->
         <div class="project-card reveal delay-4" data-title="Ma'had Tahfidz Hidayatul Qur'an — Institutional Platform" data-desc="Official institutional portal and digital admission system for Islamic boarding school in Bangka Belitung. Features curriculum overviews, santri registration pipelines, donor portals, and multimedia archives." data-modal-img="assets/img/project-5.png">
           <div class="project-preview">
-            <span class="project-badge-type">Education / Non-Profit</span>
+            <span class="project-badge-type" data-i18n="projects.p4_type">Education / Non-Profit</span>
             <img src="assets/img/ui-mahad.png" alt="Landing Page Mahad Tahfidz Hidayatul Quran" loading="lazy">
           </div>
           <div class="project-content">
-            <div class="project-client">Yayasan Hidayatul Qur'an Bangka Belitung</div>
-            <h3 class="project-title">Ma'had Tahfidz Institutional Platform</h3>
-            <p class="project-desc">
+            <div class="project-client" data-i18n="projects.p4_client">Yayasan Hidayatul Qur'an Bangka Belitung</div>
+            <h3 class="project-title" data-i18n="projects.p4_title">Ma'had Tahfidz Institutional Platform</h3>
+            <p class="project-desc" data-i18n="projects.p4_desc">
               Digital portal and academic admission workflow for Islamic boarding school, modernizing santri enrollment, curriculum showcases, and institutional outreach.
             </p>
             <div class="project-tags">
@@ -270,11 +285,11 @@
             </div>
             <div class="project-footer">
               <a href="https://www.mthq-bangka.com/" target="_blank" rel="noopener noreferrer" class="project-btn-live">
-                <span>Visit Live App</span>
+                <span data-i18n="projects.btn_live">Visit Live App</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
               </a>
               <button class="project-btn-sheet">
-                <span>Architecture Sheet</span>
+                <span data-i18n="projects.btn_sheet">Architecture Sheet</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M10 14L21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
               </button>
             </div>
@@ -286,9 +301,9 @@
     <!-- Open Source & Research Repositories -->
     <section id="opensource">
       <div class="section-header reveal">
-        <div class="section-label">Open Source & Applied AI</div>
-        <h2 class="section-title">High-Performance Computing & Computer Vision</h2>
-        <p class="section-subtitle">
+        <div class="section-label" data-i18n="oss.label">Open Source & Applied AI</div>
+        <h2 class="section-title" data-i18n="oss.title">High-Performance Computing & Computer Vision</h2>
+        <p class="section-subtitle" data-i18n="oss.subtitle">
           Advanced production repositories on GitHub spanning sports telemetry, geospatial remote sensing, and computer vision pipelines.
         </p>
       </div>
@@ -299,7 +314,7 @@
             <h3 class="oss-title">sports-telemetry-engine</h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
           </div>
-          <p class="oss-desc">
+          <p class="oss-desc" data-i18n="oss.r1_desc">
             Ultra low-latency sports telemetry ingest & processing engine built with .NET 8, Clean Architecture, CQRS, MediatR, and Redis time-series buffering for sub-second event broadcasts.
           </p>
           <div class="oss-meta">
@@ -314,7 +329,7 @@
             <h3 class="oss-title">football-possession-tracker</h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
           </div>
-          <p class="oss-desc">
+          <p class="oss-desc" data-i18n="oss.r2_desc">
             Computer vision pipeline utilizing YOLOv8 and ByteTrack to track ball trajectories, compute real-time team possession percentages, and generate spatial pitch heatmaps.
           </p>
           <div class="oss-meta">
@@ -329,7 +344,7 @@
             <h3 class="oss-title">id-crop-yield-sentinel</h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
           </div>
-          <p class="oss-desc">
+          <p class="oss-desc" data-i18n="oss.r3_desc">
             Deep learning framework for predicting agricultural crop yield in Indonesia combining Sentinel-2 multispectral imagery, Google Earth Engine, and PyTorch temporal convolutions.
           </p>
           <div class="oss-meta">
@@ -344,7 +359,7 @@
             <h3 class="oss-title">nusantara-wildfire-earlywarning</h3>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
           </div>
-          <p class="oss-desc">
+          <p class="oss-desc" data-i18n="oss.r4_desc">
             Spatial-temporal wildfire prediction engine analyzing MODIS/VIIRS thermal hotspots, weather telemetry, and peatland hydrology via LightGBM and GeoPandas for Indonesian archipelago.
           </p>
           <div class="oss-meta">
@@ -359,9 +374,9 @@
     <!-- Experience / Career Journey -->
     <section id="experience">
       <div class="section-header reveal">
-        <div class="section-label">Career Trajectory</div>
-        <h2 class="section-title">Work Experience & Production Impact</h2>
-        <p class="section-subtitle">
+        <div class="section-label" data-i18n="exp.label">Career Trajectory</div>
+        <h2 class="section-title" data-i18n="exp.title">Work Experience & Production Impact</h2>
+        <p class="section-subtitle" data-i18n="exp.subtitle">
           Proven history of scaling platforms, streamlining microservices, and delivering mission-critical applications.
         </p>
       </div>
@@ -370,17 +385,17 @@
         <!-- PT Bukit Asam Tbk -->
         <div class="timeline-item reveal delay-1">
           <div>
-            <div class="timeline-period">Oct 2026 — Present</div>
+            <div class="timeline-period" data-i18n="exp.j1_period">Oct 2026 — Present</div>
             <div class="timeline-company">PT Bukit Asam (Persero) Tbk</div>
             <div class="timeline-location">Muara Enim, South Sumatra · On-site</div>
-            <span class="timeline-badge">Active SOE Contract</span>
+            <span class="timeline-badge" data-i18n="exp.j1_badge">Active SOE Contract</span>
           </div>
           <div>
-            <h3 class="timeline-role">Application Developer</h3>
+            <h3 class="timeline-role" data-i18n="exp.j1_role">Application Developer</h3>
             <ul class="timeline-bullets">
-              <li>Engineering microservices architectures utilizing NestJS, Node.js, and SQL Server for enterprise mining operations and supply chain logistics.</li>
-              <li>Maintaining mission-critical backend modules integrating SAP ERP, equipment health tracking (EHA), and multi-service operational APIs across 34 microservices.</li>
-              <li>Hardening API data validation, query performance with TypeORM and raw T-SQL, and enforcing atomic transactional guards.</li>
+              <li data-i18n="exp.j1_b1">Engineering microservices architectures utilizing NestJS, Node.js, and SQL Server for enterprise mining operations and supply chain logistics.</li>
+              <li data-i18n="exp.j1_b2">Maintaining mission-critical backend modules integrating SAP ERP, equipment health tracking (EHA), and multi-service operational APIs across 34 microservices.</li>
+              <li data-i18n="exp.j1_b3">Hardening API data validation, query performance with TypeORM and raw T-SQL, and enforcing atomic transactional guards.</li>
             </ul>
             <div class="timeline-tags">
               <span>NestJS</span>
@@ -395,19 +410,19 @@
         <!-- HashMicro -->
         <div class="timeline-item reveal delay-2">
           <div>
-            <div class="timeline-period">Feb 2025 — Sep 2026</div>
+            <div class="timeline-period" data-i18n="exp.j2_period">Feb 2025 — Sep 2026</div>
             <div class="timeline-company">HashMicro</div>
             <div class="timeline-location">Jakarta, Indonesia · Full-time</div>
-            <span class="timeline-badge">1 yr 8 mos</span>
+            <span class="timeline-badge" data-i18n="exp.j2_badge">1 yr 8 mos</span>
           </div>
           <div>
-            <h3 class="timeline-role">Fullstack Developer</h3>
+            <h3 class="timeline-role" data-i18n="exp.j2_role">Fullstack Developer</h3>
             <ul class="timeline-bullets">
-              <li>Architected frontend migration from legacy PHP to Astro & TypeScript using SSR and Island Architecture, dramatically improving SEO and slashing bundle size.</li>
-              <li>Optimized Core Web Vitals across 4,100+ pages, cutting poor-performing URLs from 3,956 down to 246 with asset pipelines and Redis caching.</li>
-              <li>Engineered high-scale backend services in NestJS and Golang for HR, CRM, distributed SEO crawlers, and PostgreSQL workloads.</li>
-              <li>Built event-driven WhatsApp & CRM services in Go for low-latency webhook ingestion and centralized lead dispatching.</li>
-              <li>Integrated AI automation workflows with Claude, OpenAI, and Gemini APIs for automated content analysis and SEO auditing.</li>
+              <li data-i18n="exp.j2_b1">Architected frontend migration from legacy PHP to Astro & TypeScript using SSR and Island Architecture, dramatically improving SEO and slashing bundle size.</li>
+              <li data-i18n="exp.j2_b2">Optimized Core Web Vitals across 4,100+ pages, cutting poor-performing URLs from 3,956 down to 246 with asset pipelines and Redis caching.</li>
+              <li data-i18n="exp.j2_b3">Engineered high-scale backend services in NestJS and Golang for HR, CRM, distributed SEO crawlers, and PostgreSQL workloads.</li>
+              <li data-i18n="exp.j2_b4">Built event-driven WhatsApp & CRM services in Go for low-latency webhook ingestion and centralized lead dispatching.</li>
+              <li data-i18n="exp.j2_b5">Integrated AI automation workflows with Claude, OpenAI, and Gemini APIs for automated content analysis and SEO auditing.</li>
             </ul>
             <div class="timeline-tags">
               <span>Go (Golang)</span>
@@ -424,17 +439,17 @@
         <!-- Meets Indonesia -->
         <div class="timeline-item reveal delay-3">
           <div>
-            <div class="timeline-period">Feb 2024 — Jan 2025</div>
+            <div class="timeline-period" data-i18n="exp.j3_period">Feb 2024 — Jan 2025</div>
             <div class="timeline-company">Meets Indonesia</div>
             <div class="timeline-location">Palembang, South Sumatra · Hybrid</div>
-            <span class="timeline-badge">Founder & Backend Dev</span>
+            <span class="timeline-badge" data-i18n="exp.j3_badge">Founder & Backend Dev</span>
           </div>
           <div>
-            <h3 class="timeline-role">Founder & Backend Developer</h3>
+            <h3 class="timeline-role" data-i18n="exp.j3_role">Founder & Backend Developer</h3>
             <ul class="timeline-bullets">
-              <li>Spearheaded product architecture, delivering responsive web platforms in Next.js and cross-platform mobile apps in Flutter.</li>
-              <li>Constructed high-throughput backend services using Go, NestJS, and RabbitMQ message queues for event-driven asynchronous processing.</li>
-              <li>Integrated Midtrans payment gateways, Google OAuth, and JWT authentication pipelines with zero transactional discrepancies.</li>
+              <li data-i18n="exp.j3_b1">Spearheaded product architecture, delivering responsive web platforms in Next.js and cross-platform mobile apps in Flutter.</li>
+              <li data-i18n="exp.j3_b2">Constructed high-throughput backend services using Go, NestJS, and RabbitMQ message queues for event-driven asynchronous processing.</li>
+              <li data-i18n="exp.j3_b3">Integrated Midtrans payment gateways, Google OAuth, and JWT authentication pipelines with zero transactional discrepancies.</li>
             </ul>
             <div class="timeline-tags">
               <span>Next.js</span>
@@ -449,16 +464,16 @@
         <!-- R17 Group -->
         <div class="timeline-item reveal delay-4">
           <div>
-            <div class="timeline-period">Dec 2024 — Feb 2025</div>
+            <div class="timeline-period" data-i18n="exp.j4_period">Dec 2024 — Feb 2025</div>
             <div class="timeline-company">R17 Group</div>
             <div class="timeline-location">Remote · Contract</div>
-            <span class="timeline-badge">3 mos</span>
+            <span class="timeline-badge" data-i18n="exp.j4_badge">3 mos</span>
           </div>
           <div>
-            <h3 class="timeline-role">Full Stack Engineer</h3>
+            <h3 class="timeline-role" data-i18n="exp.j4_role">Full Stack Engineer</h3>
             <ul class="timeline-bullets">
-              <li>Built full-stack academic management modules using NestJS and Next.js for Universitas Padjadjaran (UNPAD) SIAKAD platform.</li>
-              <li>Engineered conflict-free course scheduling algorithms, credit unit tracking (SKS), and grade recalculation pipelines.</li>
+              <li data-i18n="exp.j4_b1">Built full-stack academic management modules using NestJS and Next.js for Universitas Padjadjaran (UNPAD) SIAKAD platform.</li>
+              <li data-i18n="exp.j4_b2">Engineered conflict-free course scheduling algorithms, credit unit tracking (SKS), and grade recalculation pipelines.</li>
             </ul>
             <div class="timeline-tags">
               <span>NestJS</span>
@@ -472,16 +487,16 @@
         <!-- Suitmedia Digital Agency -->
         <div class="timeline-item reveal delay-4">
           <div>
-            <div class="timeline-period">Feb 2024 — Jun 2024</div>
+            <div class="timeline-period" data-i18n="exp.j5_period">Feb 2024 — Jun 2024</div>
             <div class="timeline-company">Suitmedia Digital Agency</div>
             <div class="timeline-location">South Jakarta · Internship</div>
-            <span class="timeline-badge">5 mos</span>
+            <span class="timeline-badge" data-i18n="exp.j5_badge">5 mos</span>
           </div>
           <div>
-            <h3 class="timeline-role">Back End Developer Intern</h3>
+            <h3 class="timeline-role" data-i18n="exp.j5_role">Back End Developer Intern</h3>
             <ul class="timeline-bullets">
-              <li>Built RESTful APIs following Clean Architecture principles within client enterprise web applications.</li>
-              <li>Architected relational database schemas in MySQL, optimizing queries and foreign key indexing for high transactional integrity.</li>
+              <li data-i18n="exp.j5_b1">Built RESTful APIs following Clean Architecture principles within client enterprise web applications.</li>
+              <li data-i18n="exp.j5_b2">Architected relational database schemas in MySQL, optimizing queries and foreign key indexing for high transactional integrity.</li>
             </ul>
             <div class="timeline-tags">
               <span>PHP / Laravel</span>
@@ -497,16 +512,16 @@
     <!-- Technical Skills Matrix -->
     <section id="skills">
       <div class="section-header reveal">
-        <div class="section-label">Core Capabilities</div>
-        <h2 class="section-title">Technical Mastery & Stack</h2>
-        <p class="section-subtitle">
+        <div class="section-label" data-i18n="skills.label">Core Capabilities</div>
+        <h2 class="section-title" data-i18n="skills.title">Technical Mastery & Stack</h2>
+        <p class="section-subtitle" data-i18n="skills.subtitle">
           Tools, frameworks, and architectural paradigms leveraged to engineer resilient digital products.
         </p>
       </div>
 
       <div class="skills-grid">
         <div class="skill-category reveal delay-1">
-          <h3>Backend & Distributed</h3>
+          <h3 data-i18n="skills.c1_title">Backend & Distributed</h3>
           <ul class="skill-list">
             <li><span>NestJS & Node.js</span> <span class="badge">Advanced</span></li>
             <li><span>Golang</span> <span class="badge">Production</span></li>
@@ -518,7 +533,7 @@
         </div>
 
         <div class="skill-category reveal delay-2">
-          <h3>Frontend Engineering</h3>
+          <h3 data-i18n="skills.c2_title">Frontend Engineering</h3>
           <ul class="skill-list">
             <li><span>Next.js & React</span> <span class="badge">Advanced</span></li>
             <li><span>TypeScript</span> <span class="badge">Strict</span></li>
@@ -530,7 +545,7 @@
         </div>
 
         <div class="skill-category reveal delay-3">
-          <h3>Databases & Storage</h3>
+          <h3 data-i18n="skills.c3_title">Databases & Storage</h3>
           <ul class="skill-list">
             <li><span>PostgreSQL</span> <span class="badge">Advanced</span></li>
             <li><span>SQL Server (T-SQL)</span> <span class="badge">Enterprise</span></li>
@@ -542,7 +557,7 @@
         </div>
 
         <div class="skill-category reveal delay-4">
-          <h3>AI & DevOps</h3>
+          <h3 data-i18n="skills.c4_title">AI & DevOps</h3>
           <ul class="skill-list">
             <li><span>OpenAI / Claude / Gemini APIs</span> <span class="badge">LLM</span></li>
             <li><span>PyTorch & YOLOv8</span> <span class="badge">Vision</span></li>
@@ -556,9 +571,9 @@
     <!-- Rate Card & Freelance Engagement Section -->
     <section id="rates">
       <div class="section-header reveal">
-        <div class="section-label">Freelance & Project Delivery</div>
-        <h2 class="section-title">Freelance Rates & Project Collaboration</h2>
-        <p class="section-subtitle">
+        <div class="section-label" data-i18n="rates.label">Freelance & Project Delivery</div>
+        <h2 class="section-title" data-i18n="rates.title">Freelance Rates & Project Collaboration</h2>
+        <p class="section-subtitle" data-i18n="rates.subtitle">
           Currently working full-time at PT Bukit Asam (Persero) Tbk. Available selectively for high-impact freelance projects, technical consulting, and deliverable-based milestone builds outside working hours.
         </p>
       </div>
@@ -566,66 +581,66 @@
       <div class="rates-grid">
         <!-- Tier 1: Hourly Technical Advisory -->
         <div class="rate-card reveal delay-1">
-          <div class="rate-badge">Hourly & Advisory</div>
+          <div class="rate-badge" data-i18n="rates.t1_badge">Hourly & Advisory</div>
           <div class="rate-header">
-            <h3 class="rate-title">Technical Advisory & Audit</h3>
+            <h3 class="rate-title" data-i18n="rates.t1_title">Technical Advisory & Audit</h3>
             <div class="rate-price">
               <span class="currency">IDR</span>
-              <span class="amount">150K</span>
-              <span class="period">/ hour</span>
+              <span class="amount" data-i18n="rates.t1_rate_amount">150K</span>
+              <span class="period" data-i18n="rates.t1_period">/ hour</span>
             </div>
-            <p class="rate-desc">Ideal for architectural reviews, backend bottlenecks, database indexing audits, and code optimization sessions.</p>
+            <p class="rate-desc" data-i18n="rates.t1_desc">Ideal for architectural reviews, backend bottlenecks, database indexing audits, and code optimization sessions.</p
           </div>
           <ul class="rate-features">
-            <li><span>Microservice Architecture & Schema Audit</span></li>
-            <li><span>Complex SQL / T-SQL Query Optimization</span></li>
-            <li><span>API Contract & Security Verification</span></li>
-            <li><span>Pair programming & 1-on-1 technical advisory</span></li>
+            <li><span data-i18n="rates.t1_f1">Microservice Architecture & Schema Audit</span></li>
+            <li><span data-i18n="rates.t1_f2">Complex SQL / T-SQL Query Optimization</span></li>
+            <li><span data-i18n="rates.t1_f3">API Contract & Security Verification</span></li>
+            <li><span data-i18n="rates.t1_f4">Pair programming & 1-on-1 technical advisory</span></li>
           </ul>
-          <a href="mailto:kevinnaserwan@gmail.com?subject=Inquiry:%20Technical%20Advisory%20Session" class="btn btn-secondary rate-btn">Book Advisory Session</a>
+          <a href="mailto:kevinnaserwan@gmail.com?subject=Inquiry:%20Technical%20Advisory%20Session" class="btn btn-secondary rate-btn" data-i18n="rates.t1_btn">Book Advisory Session</a>
         </div>
 
         <!-- Tier 2: End-to-End Project Build (Featured) -->
         <div class="rate-card rate-featured reveal delay-2">
-          <div class="rate-badge rate-badge-featured">Most Popular · Fixed Milestone</div>
+          <div class="rate-badge rate-badge-featured" data-i18n="rates.t2_badge">Most Popular · Fixed Milestone</div>
           <div class="rate-header">
-            <h3 class="rate-title">Full Project Delivery</h3>
+            <h3 class="rate-title" data-i18n="rates.t2_title">Full Project Delivery</h3>
             <div class="rate-price">
               <span class="currency">IDR</span>
-              <span class="amount">10M – 35M</span>
-              <span class="period">/ project</span>
+              <span class="amount" data-i18n="rates.t2_rate_amount">10M – 35M</span>
+              <span class="period" data-i18n="rates.t2_period">/ project</span>
             </div>
-            <p class="rate-desc">End-to-end development of production web apps, management portals, telemetry dashboards, or microservice modules.</p>
+            <p class="rate-desc" data-i18n="rates.t2_desc">End-to-end development of production web apps, management portals, telemetry dashboards, or microservice modules.</p>
           </div>
           <ul class="rate-features">
-            <li><span>Full-stack implementation (Next.js / NestJS / Go)</span></li>
-            <li><span>Clean relational database schema & caching</span></li>
-            <li><span>Interactive UI, Charts & Admin Dashboards</span></li>
-            <li><span>Dockerized setup & Cloud / VPS Deployment</span></li>
-            <li><span>30-day post-launch warranty & handover</span></li>
+            <li><span data-i18n="rates.t2_f1">Full-stack implementation (Next.js / NestJS / Go)</span></li>
+            <li><span data-i18n="rates.t2_f2">Clean relational database schema & caching</span></li>
+            <li><span data-i18n="rates.t2_f3">Interactive UI, Charts & Admin Dashboards</span></li>
+            <li><span data-i18n="rates.t2_f4">Dockerized setup & Cloud / VPS Deployment</span></li>
+            <li><span data-i18n="rates.t2_f5">30-day post-launch warranty & handover</span></li>
           </ul>
-          <a href="mailto:kevinnaserwan@gmail.com?subject=Inquiry:%20Project%20Build%20Collaboration" class="btn btn-primary rate-btn">Discuss Project Scope</a>
+          <a href="mailto:kevinnaserwan@gmail.com?subject=Inquiry:%20Project%20Build%20Collaboration" class="btn btn-primary rate-btn" data-i18n="rates.t2_btn">Discuss Project Scope</a>
         </div>
 
         <!-- Tier 3: Monthly Part-Time / Sprint Retainer -->
         <div class="rate-card reveal delay-3">
-          <div class="rate-badge">Sprint Retainer</div>
+          <div class="rate-badge" data-i18n="rates.t3_badge">Sprint Retainer</div>
           <div class="rate-header">
-            <h3 class="rate-title">Part-Time Sprint Retainer</h3>
+            <h3 class="rate-title" data-i18n="rates.t3_title">Part-Time Sprint Retainer</h3>
             <div class="rate-price">
               <span class="currency">IDR</span>
-              <span class="amount">6M – 8M</span>
-              <span class="period">/ month</span>
+              <span class="amount" data-i18n="rates.t3_rate_amount">6M – 8M</span>
+              <span class="period" data-i18n="rates.t3_period">/ month</span>
             </div>
-            <p class="rate-desc">Dedicated part-time engineering bandwidth (~10–15 hours/week). Continuous feature rollouts, API maintenance, or AI pipelines.</p>
+            <p class="rate-desc" data-i18n="rates.t3_desc">Dedicated part-time engineering bandwidth (~10–15 hours/week). Continuous feature rollouts, API maintenance, or AI pipelines.</p>
           </div>
           <ul class="rate-features">
-            <li><span>Dedicated weekly development sprints</span></li>
-            <li><span>Ongoing API & database performance tuning</span></li>
-            <li><span>Priority bug resolution & technical enhancements</span></li>
-            <li><span>Direct communication via Slack / Discord / WA</span></li>
+            <li><span data-i18n="rates.t3_f1">Dedicated weekly development sprints</span></li>
+            <li><span data-i18n="rates.t3_f2">Ongoing API & database performance tuning</span></li>
+            <li><span data-i18n="rates.t3_f3">Priority bug resolution & technical enhancements</span></li>
+            <li><span data-i18n="rates.t3_f4">Direct communication via Slack / Discord / WA</span></li>
           </ul>
-          <a href="mailto:kevinnaserwan@gmail.com?subject=Inquiry:%20Part-Time%20Sprint%20Retainer" class="btn btn-secondary rate-btn">Inquire Sprint Retainer</a>
+          <a href="mailto:kevinnaserwan@gmail.com?subject=Inquiry:%20Part-Time%20Sprint%20Retainer" class="btn btn-secondary rate-btn" data-i18n="rates.t3_btn">Inquire Sprint Retainer</a>
         </div>
       </div>
     </section>
@@ -633,8 +648,8 @@
     <!-- Contact & Footer -->
     <section id="contact">
       <div class="contact-card reveal">
-        <h2 class="contact-title">Let’s build something extraordinary together.</h2>
-        <p class="contact-desc">
+        <h2 class="contact-title" data-i18n="contact.title">Let’s build something extraordinary together.</h2>
+        <p class="contact-desc" data-i18n="contact.desc">
           Whether you need high-throughput microservices, enterprise ERP integrations, or modern AI application architecture, my inbox is always open.
         </p>
         <div class="contact-links">
@@ -681,17 +696,17 @@
             <span class="nav-brand-dot"></span>
             <span class="footer-brand-name">Kevin Putrayudha Naserwan</span>
           </div>
-          <p class="footer-tagline">
+          <p class="footer-tagline" data-i18n="footer.tagline">
             Application Developer at PT Bukit Asam (Persero) Tbk. Architecting mission-critical microservices, distributed data pipelines, and production AI platforms.
           </p>
           <div class="footer-status-indicator">
             <span class="pulse-dot-green"></span>
-            <span>Based in South Sumatra & Jakarta · Open for enterprise collaborations</span>
+            <span data-i18n="footer.status">Based in South Sumatra & Jakarta · Open for enterprise collaborations</span>
           </div>
         </div>
 
         <div class="footer-col">
-          <h4 class="footer-heading">Navigation</h4>
+          <h4 class="footer-heading" data-i18n="footer.nav_title">Navigation</h4>
           <ul class="footer-list">
             <li><a href="#home">Hero Overview</a></li>
             <li><a href="#about">Philosophy & Scale</a></li>
@@ -704,7 +719,7 @@
         </div>
 
         <div class="footer-col">
-          <h4 class="footer-heading">Live Portals</h4>
+          <h4 class="footer-heading" data-i18n="footer.portals_title">Live Portals</h4>
           <ul class="footer-list">
             <li><a href="https://lrt-sumsel.id/" target="_blank" rel="noopener noreferrer">LRT Sumatera Selatan ↗</a></li>
             <li><a href="https://bukutamu.pa-muaraenim.go.id/" target="_blank" rel="noopener noreferrer">PA Muara Enim Digital ↗</a></li>
@@ -714,25 +729,25 @@
         </div>
 
         <div class="footer-col">
-          <h4 class="footer-heading">Direct Channels</h4>
+          <h4 class="footer-heading" data-i18n="footer.channels_title">Direct Channels</h4>
           <ul class="footer-list">
             <li><a href="mailto:kevinnaserwan@gmail.com">kevinnaserwan@gmail.com</a></li>
             <li><a href="https://linkedin.com/in/kevin-naserwan" target="_blank" rel="noopener noreferrer">LinkedIn Profile ↗</a></li>
             <li><a href="https://github.com/KevinNaserwan" target="_blank" rel="noopener noreferrer">GitHub Profile ↗</a></li>
           </ul>
           <div class="footer-hire-badge">
-            <span>Enterprise & Contract</span>
+            <span data-i18n="footer.badge">Enterprise & Contract</span>
           </div>
         </div>
       </div>
 
       <div class="footer-bottom-bar">
         <div class="footer-copyright">
-          <span>© 2026 Kevin Putrayudha Naserwan. Crafted with zero AI-slop, clean architectural standards & verified production scale.</span>
+          <span data-i18n="footer.copyright">© 2026 Kevin Putrayudha Naserwan. Crafted with zero AI-slop, clean architectural standards & verified production scale.</span>
         </div>
         <div class="footer-bottom-actions">
           <a href="#home" class="footer-back-to-top">
-            <span>Back to top</span>
+            <span data-i18n="footer.back_to_top">Back to top</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 15l-6-6-6 6"/></svg>
           </a>
         </div>
@@ -740,6 +755,7 @@
     </div>
   </footer>
 
+  <script src="i18n.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

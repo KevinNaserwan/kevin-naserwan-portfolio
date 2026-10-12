@@ -237,3 +237,71 @@ window.addEventListener('scroll', () => {
     }
   });
 });
+
+// Internationalization (i18n: EN / ID / ZH)
+const langToggle = document.getElementById('lang-toggle');
+const langDropdown = document.querySelector('.lang-dropdown');
+const langCurrentLabel = document.getElementById('lang-current-label');
+const langOpts = document.querySelectorAll('.lang-opt');
+
+const langLabels = {
+  en: 'EN',
+  id: 'ID',
+  zh: 'ZH'
+};
+
+function setLanguage(lang) {
+  if (!window.i18nData || !window.i18nData[lang]) return;
+
+  const dict = window.i18nData[lang];
+  document.documentElement.setAttribute('lang', lang);
+
+  // Update text elements with data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) {
+      el.innerHTML = dict[key];
+    }
+  });
+
+  // Update button label and active states
+  if (langCurrentLabel) {
+    langCurrentLabel.textContent = langLabels[lang] || 'EN';
+  }
+
+  langOpts.forEach(opt => {
+    if (opt.getAttribute('data-lang') === lang) {
+      opt.classList.add('active');
+    } else {
+      opt.classList.remove('active');
+    }
+  });
+
+  localStorage.setItem('kevin-lang', lang);
+}
+
+if (langToggle && langDropdown) {
+  langToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langDropdown.classList.toggle('active');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!langDropdown.contains(e.target)) {
+      langDropdown.classList.remove('active');
+    }
+  });
+}
+
+langOpts.forEach(opt => {
+  opt.addEventListener('click', () => {
+    const lang = opt.getAttribute('data-lang');
+    setLanguage(lang);
+    if (langDropdown) langDropdown.classList.remove('active');
+  });
+});
+
+// Initialize Language on Page Load
+const initialLang = localStorage.getItem('kevin-lang') || 'en';
+setLanguage(initialLang);
+
