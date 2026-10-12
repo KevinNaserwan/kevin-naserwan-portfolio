@@ -121,7 +121,8 @@ const i18nData = {
     "rates.subtitle": "Currently working full-time at PT Bukit Asam (Persero) Tbk. Available selectively for high-impact freelance projects, technical consulting, and deliverable-based milestone builds outside working hours.",
     "rates.t1_badge": "Hourly & Advisory",
     "rates.t1_title": "Technical Advisory & Audit",
-    "rates.t1_rate_amount": "150K",
+    "rates.t1_currency": "USD",
+    "rates.t1_rate_amount": "5",
     "rates.t1_period": "/ hour",
     "rates.t1_desc": "Ideal for architectural reviews, backend bottlenecks, database indexing audits, and code optimization sessions.",
     "rates.t1_f1": "Microservice Architecture & Schema Audit",
@@ -132,7 +133,8 @@ const i18nData = {
 
     "rates.t2_badge": "Most Popular · Fixed Milestone",
     "rates.t2_title": "Full Project Delivery",
-    "rates.t2_rate_amount": "10M – 35M",
+    "rates.t2_currency": "USD",
+    "rates.t2_rate_amount": "50 – ,500",
     "rates.t2_period": "/ project",
     "rates.t2_desc": "End-to-end development of production web apps, management portals, telemetry dashboards, or microservice modules.",
     "rates.t2_f1": "Full-stack implementation (Next.js / NestJS / Go)",
@@ -144,7 +146,8 @@ const i18nData = {
 
     "rates.t3_badge": "Sprint Retainer",
     "rates.t3_title": "Part-Time Sprint Retainer",
-    "rates.t3_rate_amount": "6M – 8M",
+    "rates.t3_currency": "USD",
+    "rates.t3_rate_amount": "50 – 00",
     "rates.t3_period": "/ month",
     "rates.t3_desc": "Dedicated part-time engineering bandwidth (~10–15 hours/week). Continuous feature rollouts, API maintenance, or AI pipelines.",
     "rates.t3_f1": "Dedicated weekly development sprints",
@@ -288,6 +291,7 @@ const i18nData = {
     "rates.subtitle": "Saat ini bekerja penuh waktu di PT Bukit Asam (Persero) Tbk. Tersedia secara selektif untuk proyek freelance berdampak tinggi, konsultasi teknis, dan pengembangan berbasis milestone di luar jam kerja.",
     "rates.t1_badge": "Per Jam & Konsultasi",
     "rates.t1_title": "Konsultasi & Audit Teknis",
+    "rates.t1_currency": "IDR",
     "rates.t1_rate_amount": "150Rb",
     "rates.t1_period": "/ jam",
     "rates.t1_desc": "Solusi ideal untuk review arsitektur sistem, audit bottleneck backend, optimasi indeks database, dan sesi perbaikan kode.",
@@ -299,6 +303,7 @@ const i18nData = {
 
     "rates.t2_badge": "Paling Populer · Fixed Milestone",
     "rates.t2_title": "Pengembangan Proyek Penuh",
+    "rates.t2_currency": "IDR",
     "rates.t2_rate_amount": "10Jt – 35Jt",
     "rates.t2_period": "/ proyek",
     "rates.t2_desc": "Pengembangan menyeluruh (end-to-end) aplikasi web produksi, portal manajemen, dashboard telemetri, atau modul microservice.",
@@ -311,6 +316,7 @@ const i18nData = {
 
     "rates.t3_badge": "Sprint Retainer",
     "rates.t3_title": "Retainer Sprint Part-Time",
+    "rates.t3_currency": "IDR",
     "rates.t3_rate_amount": "6Jt – 8Jt",
     "rates.t3_period": "/ bulan",
     "rates.t3_desc": "Dukungan rekayasa teknis part-time terdedikasi (~10–15 jam/minggu). Rilis fitur berkala, pemeliharaan API, atau optimasi pipeline AI.",
@@ -466,7 +472,8 @@ const i18nData = {
 
     "rates.t2_badge": "最受欢迎 · 固定里程碑",
     "rates.t2_title": "端到端完整项目交付",
-    "rates.t2_rate_amount": "1,000万 – 3,500万 印尼盾",
+    "rates.t2_currency": "CNY (人民币)",
+    "rates.t2_rate_amount": "¥5,000 – ¥17,500",
     "rates.t2_period": "/ 项目",
     "rates.t2_desc": "生产级 Web 平台、企业管理后台、实时遥测监控看板或微服务模块的全流程闭环研发。",
     "rates.t2_f1": "全栈定制实现 (Next.js / NestJS / Go)",
@@ -478,7 +485,8 @@ const i18nData = {
 
     "rates.t3_badge": "周期包月 · 敏捷冲刺",
     "rates.t3_title": "兼职敏捷冲刺周期合作",
-    "rates.t3_rate_amount": "600万 – 800万 印尼盾",
+    "rates.t3_currency": "CNY (人民币)",
+    "rates.t3_rate_amount": "¥3,000 – ¥4,000",
     "rates.t3_period": "/ 月",
     "rates.t3_desc": "提供专注的兼职研发带宽 (每周约 10–15 小时)。适合持续性功能迭代、接口维护升级或 AI 数据流治理。",
     "rates.t3_f1": "专注的每周研发冲刺迭代交付",
