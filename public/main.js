@@ -314,12 +314,81 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// Geolocation-Based Language Detection
+async function detectDefaultLanguage() {
+  // If user previously chose a language manually, respect user preference
+  const savedLang = localStorage.getItem('kevin-lang');
+  if (savedLang && (savedLang === 'en' || savedLang === 'id' || savedLang === 'zh')) {
+    setLanguage(savedLang);
+    return;
+  }
+
+  // Quick fallback check via browser navigator.languages / language
+  const browserLangs = navigator.languages || [navigator.language || ''];
+  let guessedLang = 'en';
+  for (const bl of browserLangs) {
+    const l = (bl || '').toLowerCase();
+    if (l.startsWith('id')) {
+      guessedLang = 'id';
+      break;
+    }
+    if (l.startsWith('zh')) {
+      guessedLang = 'zh';
+      break;
+    }
+  }
+
+  // Set initial guessed language immediately for fast render
+  setLanguage(guessedLang);
+
+  // Detect country by IP via lightweight geo APIs
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+
+    const res = await fetch('https://api.country.is/', { signal: controller.signal });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      const country = (data.country || '').toUpperCase();
+      let detected = 'en';
+      if (country === 'ID') {
+        detected = 'id';
+      } else if (country === 'CN' || country === 'HK' || country === 'TW') {
+        detected = 'zh';
+      }
+
+      setLanguage(detected);
+      return;
+    }
+  } catch (err) {
+    // Secondary fallback: ipwho.is
+    try {
+      const res2 = await fetch('https://ipwho.is/?fields=country_code', { signal: AbortSignal.timeout ? AbortSignal.timeout(2000) : undefined });
+      if (res2.ok) {
+        const data2 = await res2.json();
+        const country2 = (data2.country_code || '').toUpperCase();
+        let detected2 = 'en';
+        if (country2 === 'ID') {
+          detected2 = 'id';
+        } else if (country2 === 'CN' || country2 === 'HK' || country2 === 'TW') {
+          detected2 = 'zh';
+        }
+        setLanguage(detected2);
+      }
+    } catch (e) {
+      // Fallback already active
+    }
+  }
+}
+
 // Initialize Language on Page Load & DOMContentLoaded
-const initialLang = localStorage.getItem('kevin-lang') || 'en';
-setLanguage(initialLang);
+detectDefaultLanguage();
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => setLanguage(initialLang));
+  document.addEventListener('DOMContentLoaded', detectDefaultLanguage);
 }
+
 
 
