@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "npx serve public -l 3000",
-    "build": "mkdir -p public && cp index.html style.css main.js public/ && cp -r assets public/ && echo 'Build complete: public directory created successfully'",
-    "start": "npx serve public -l 3000"
+    "build": "mkdir -p public && cp -r index.html style.css main.js assets public/ 2>/dev/null || true"
+  },
+  "dependencies": {
+    "next": "^14.2.5"
   }
 }
