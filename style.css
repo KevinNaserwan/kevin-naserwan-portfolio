@@ -138,8 +138,10 @@ body {
   top: 20px;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 1000;
   pointer-events: none;
+  display: flex;
+  justify-content: center;
 }
 
 .nav-pill {
@@ -147,7 +149,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 880px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  gap: 14px;
   margin: 0 auto;
   padding: 8px 14px 8px 18px;
   background: var(--bg-glass);
@@ -245,6 +249,8 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
+  pointer-events: auto;
 }
 
 .btn-icon {
@@ -377,7 +383,16 @@ body {
   font-weight: 600;
   letter-spacing: 0.02em;
   cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-menu-bar * {
+  pointer-events: none;
 }
 
 .btn-menu-bar:hover {
@@ -417,7 +432,7 @@ body {
 .menu-drawer {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 999999;
   visibility: hidden;
   opacity: 0;
   transition: visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1273,13 +1288,25 @@ section {
 }
 
 .project-tags span {
-  padding: 3px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
   border-radius: 6px;
   font-size: 0.76rem;
   font-family: var(--font-mono);
   background: var(--tag-bg);
   border: 1px solid var(--tag-border);
   color: var(--tag-text);
+  line-height: 1;
+}
+
+.project-tags span svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* Polished Project Footer & Elegant Action Buttons */
@@ -1696,6 +1723,253 @@ section {
   font-size: 0.85rem;
   color: var(--text-muted);
   line-height: 1.45;
+}
+
+/* Real-time GitHub Commit Activity & 52-Week Heatmap Graph */
+.github-activity-card {
+  margin-top: 24px;
+  padding: 24px 28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.github-activity-card:hover {
+  border-color: var(--border-hover);
+}
+
+.gh-activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.gh-activity-title-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.gh-avatar-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .gh-avatar-box {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.gh-activity-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.gh-handle {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--status-active);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.2s ease;
+}
+
+.gh-handle:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.gh-activity-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.gh-activity-subtitle strong,
+.gh-activity-subtitle span#gh-total-commits {
+  color: var(--text-primary);
+  font-weight: 700;
+  font-feature-settings: "tnum";
+}
+
+.stat-badge-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.live-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulse-dot 2s infinite ease-in-out;
+}
+
+.gh-graph-wrapper {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  padding: 18px 20px 14px;
+}
+
+[data-theme="light"] .gh-graph-wrapper {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.gh-graph-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-subtle) transparent;
+}
+
+.gh-graph-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gh-graph-scroll::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 9999px;
+}
+
+.gh-graph-grid {
+  display: grid;
+  grid-template-rows: repeat(7, 11px);
+  grid-auto-flow: column;
+  grid-auto-columns: 11px;
+  gap: 3px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.gh-day-cell {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.gh-day-cell:hover {
+  transform: scale(1.4);
+  z-index: 10;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+/* Green Commit Levels - Dark Theme */
+.gh-day-cell.lvl-0,
+.gh-box.lvl-0 {
+  background-color: rgba(255, 255, 255, 0.05);
+  outline: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.gh-day-cell.lvl-1,
+.gh-box.lvl-1 {
+  background-color: #0e4429;
+}
+
+.gh-day-cell.lvl-2,
+.gh-box.lvl-2 {
+  background-color: #006d32;
+}
+
+.gh-day-cell.lvl-3,
+.gh-box.lvl-3 {
+  background-color: #26a641;
+}
+
+.gh-day-cell.lvl-4,
+.gh-box.lvl-4 {
+  background-color: #39d353;
+  box-shadow: 0 0 4px rgba(57, 211, 83, 0.4);
+}
+
+/* Green Commit Levels - Light Theme */
+[data-theme="light"] .gh-day-cell.lvl-0,
+[data-theme="light"] .gh-box.lvl-0 {
+  background-color: #ebedf0;
+  outline: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .gh-day-cell.lvl-1,
+[data-theme="light"] .gh-box.lvl-1 {
+  background-color: #9be9a8;
+}
+
+[data-theme="light"] .gh-day-cell.lvl-2,
+[data-theme="light"] .gh-box.lvl-2 {
+  background-color: #40c463;
+}
+
+[data-theme="light"] .gh-day-cell.lvl-3,
+[data-theme="light"] .gh-box.lvl-3 {
+  background-color: #30a14e;
+}
+
+[data-theme="light"] .gh-day-cell.lvl-4,
+[data-theme="light"] .gh-box.lvl-4 {
+  background-color: #216e39;
+}
+
+.gh-graph-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gh-caption {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.gh-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-text {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin: 0 4px;
+  font-family: var(--font-mono);
+}
+
+.gh-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
 }
 
 /* Polyglot Spectrum & Tech Stack */
