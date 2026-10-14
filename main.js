@@ -209,11 +209,60 @@ if (modal) {
   });
 }
 
-// Escape key to close modal
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
-    modal.classList.remove('active');
+// Navigation Drawer (Menu Bar) Controls
+const menuDrawer = document.getElementById('menu-drawer');
+const menuBarBtn = document.getElementById('menu-bar-btn');
+const menuCloseBtn = document.getElementById('menu-close-btn');
+const menuBackdrop = document.getElementById('menu-backdrop');
+const drawerNavItems = document.querySelectorAll('[data-drawer-nav]');
+
+function openMenuDrawer() {
+  if (menuDrawer) {
+    menuDrawer.classList.add('active');
+    menuDrawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeMenuDrawer() {
+  if (menuDrawer) {
+    menuDrawer.classList.remove('active');
+    menuDrawer.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+  }
+}
+
+if (menuBarBtn) {
+  menuBarBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openMenuDrawer();
+  });
+}
+
+if (menuCloseBtn) {
+  menuCloseBtn.addEventListener('click', closeMenuDrawer);
+}
+
+if (menuBackdrop) {
+  menuBackdrop.addEventListener('click', closeMenuDrawer);
+}
+
+drawerNavItems.forEach(item => {
+  item.addEventListener('click', () => {
+    closeMenuDrawer();
+  });
+});
+
+// Escape key to close modal or drawer
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (modal && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    if (menuDrawer && menuDrawer.classList.contains('active')) {
+      closeMenuDrawer();
+    }
   }
 });
 
@@ -600,14 +649,104 @@ async function detectDefaultLanguage() {
   setLanguage('en', false);
 }
 
-// Initialize Language and Live Exchange Rates on Page Load & DOMContentLoaded
+// Real-time GitHub Telemetry & Stats Fetcher with 15-Minute Cache
+async function fetchGitHubRealtimeStats() {
+  const reposEl = document.getElementById('stat-github-repos');
+  const starsEl = document.getElementById('stat-github-stars');
+
+  if (!reposEl && !starsEl) return;
+
+  const CACHE_KEY = 'kevin-gh-telemetry-cache';
+  const TTL = 15 * 60 * 1000; // 15 minutes
+
+  function animateCount(el, start, end, duration = 1200, suffix = '+') {
+    if (!el) return;
+    const startTime = performance.now();
+    function step(currentTime) {
+      const progress = Math.min((currentTime - startTime) / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      const currentVal = Math.floor(start + (end - start) * easeProgress);
+      el.textContent = currentVal + (suffix || '');
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        el.textContent = end + (suffix || '');
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  // 1. Check Local Storage Cache first to avoid hitting GitHub API rate limits (60 req/hr)
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Date.now() - parsed.timestamp < TTL) {
+        if (reposEl && parsed.repos != null) animateCount(reposEl, 0, parsed.repos, 900, '+');
+        if (starsEl && parsed.stars != null) animateCount(starsEl, 0, parsed.stars, 900, '+');
+        return;
+      }
+    }
+  } catch (e) {}
+
+  // 2. Fetch fresh telemetry from GitHub API
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
+
+    const [userRes, reposRes] = await Promise.all([
+      fetch('https://api.github.com/users/KevinNaserwan', { signal: controller.signal }),
+      fetch('https://api.github.com/users/KevinNaserwan/repos?per_page=100', { signal: controller.signal })
+    ]);
+    clearTimeout(timeout);
+
+    let publicRepos = 63;
+    let totalStars = 39;
+
+    if (userRes.ok) {
+      const userData = await userRes.json();
+      if (typeof userData.public_repos === 'number') {
+        publicRepos = userData.public_repos;
+      }
+    }
+
+    if (reposRes.ok) {
+      const reposData = await reposRes.json();
+      if (Array.isArray(reposData)) {
+        totalStars = reposData.reduce((acc, r) => acc + (r.stargazers_count || 0), 0);
+      }
+    }
+
+    // Cache the fresh results
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        repos: publicRepos,
+        stars: totalStars
+      }));
+    } catch (e) {}
+
+    // Animate numbers smoothly
+    if (reposEl) animateCount(reposEl, 0, publicRepos, 1200, '+');
+    if (starsEl) animateCount(starsEl, 0, totalStars, 1200, '+');
+
+  } catch (err) {
+    // Graceful fallback to verified numbers
+    if (reposEl) reposEl.textContent = '63+';
+    if (starsEl) starsEl.textContent = '39+';
+  }
+}
+
+// Initialize Language, Live Exchange Rates, and Realtime GitHub Telemetry
 fetchLiveExchangeRates();
 detectDefaultLanguage();
+fetchGitHubRealtimeStats();
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     fetchLiveExchangeRates();
     detectDefaultLanguage();
+    fetchGitHubRealtimeStats();
   });
 }
 
