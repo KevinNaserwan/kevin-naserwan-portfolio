@@ -433,30 +433,23 @@ body {
   position: fixed;
   inset: 0;
   z-index: 999999;
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
   pointer-events: none;
 }
 
 .menu-drawer.active {
-  visibility: visible;
-  opacity: 1;
-  pointer-events: auto;
+  display: block !important;
+  pointer-events: auto !important;
 }
 
 .menu-drawer-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.menu-drawer.active .menu-drawer-backdrop {
-  opacity: 1;
+  z-index: 1;
+  cursor: pointer;
 }
 
 .menu-drawer-panel {
@@ -466,17 +459,24 @@ body {
   bottom: 0;
   width: 100%;
   max-width: 440px;
-  background: var(--bg-glass);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
+  background: #111114;
   border-left: 1px solid var(--border-subtle);
-  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.5);
+  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.8);
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
+  z-index: 2;
+  animation: slideDrawerPanel 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-theme="light"] .menu-drawer-panel {
+  background: #ffffff;
+}
+
+@keyframes slideDrawerPanel {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
 .menu-drawer.active .menu-drawer-panel {
@@ -1864,13 +1864,15 @@ section {
   grid-auto-columns: 11px;
   gap: 3px;
   width: max-content;
-  min-width: 100%;
+  min-height: 98px;
 }
 
 .gh-day-cell {
   width: 11px;
   height: 11px;
   border-radius: 2px;
+  display: block;
+  box-sizing: border-box;
   transition: transform 0.15s ease, filter 0.15s ease;
   cursor: pointer;
   position: relative;
@@ -1885,8 +1887,8 @@ section {
 /* Green Commit Levels - Dark Theme */
 .gh-day-cell.lvl-0,
 .gh-box.lvl-0 {
-  background-color: rgba(255, 255, 255, 0.05);
-  outline: 1px solid rgba(255, 255, 255, 0.03);
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .gh-day-cell.lvl-1,

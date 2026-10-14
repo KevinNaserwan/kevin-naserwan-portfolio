@@ -1,6 +1,43 @@
+// Safe Storage Helpers to prevent any uncaught DOMException/SecurityError
+function safeGetStorage(key, fallback = null) {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function safeSetStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {}
+}
+
+// Global Drawer Controls (Exposed to window immediately for instant click availability)
+function openMenuDrawer() {
+  const drawer = document.getElementById('menu-drawer');
+  if (drawer) {
+    drawer.classList.add('active');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeMenuDrawer() {
+  const drawer = document.getElementById('menu-drawer');
+  if (drawer) {
+    drawer.classList.remove('active');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+}
+
+window.openMenuDrawer = openMenuDrawer;
+window.closeMenuDrawer = closeMenuDrawer;
+
 // Ambient 3D Particle/Mesh Canvas (Ultra-clean, zero AI-slop, kinetic physics)
 const canvas = document.getElementById('ambient-canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas ? canvas.getContext('2d') : null;
 
 let width, height;
 let particles = [];
@@ -156,15 +193,17 @@ document.querySelectorAll('.project-card, .stat-card, .lang-card').forEach(card 
 const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 
-const savedTheme = localStorage.getItem('kevin-theme') || 'dark';
-root.setAttribute('data-theme', savedTheme);
+const savedTheme = safeGetStorage('kevin-theme', 'dark');
+if (root) root.setAttribute('data-theme', savedTheme);
 
-themeToggle.addEventListener('click', () => {
-  const current = root.getAttribute('data-theme');
-  const next = current === 'light' ? 'dark' : 'light';
-  root.setAttribute('data-theme', next);
-  localStorage.setItem('kevin-theme', next);
-});
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    safeSetStorage('kevin-theme', next);
+  });
+}
 
 // Modal Zoom for Case Study Sheets
 const modal = document.getElementById('project-modal');
@@ -209,27 +248,6 @@ if (modal) {
   });
 }
 
-// Navigation Drawer (Menu Bar) Controls - Robust Document Delegation
-const menuDrawer = document.getElementById('menu-drawer');
-
-function openMenuDrawer() {
-  const drawer = document.getElementById('menu-drawer');
-  if (drawer) {
-    drawer.classList.add('active');
-    drawer.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-}
-
-function closeMenuDrawer() {
-  const drawer = document.getElementById('menu-drawer');
-  if (drawer) {
-    drawer.classList.remove('active');
-    drawer.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-  }
-}
-
 // Global Click Delegation to guarantee menu button clickability across all viewports
 document.addEventListener('click', (e) => {
   // Menu bar button click
@@ -257,16 +275,16 @@ document.addEventListener('click', (e) => {
     return;
   }
 
-  // Drawer nav item click
-  const drawerItem = e.target.closest('[data-drawer-nav]');
-  if (drawerItem) {
+  // Drawer nav item or navbar link click
+  const navItem = e.target.closest('.nav-link, [data-drawer-nav]');
+  if (navItem) {
     closeMenuDrawer();
-    const href = drawerItem.getAttribute('href');
+    const href = navItem.getAttribute('href');
     if (href && href.startsWith('#')) {
       const targetEl = document.querySelector(href);
       if (targetEl) {
         e.preventDefault();
-        const topOffset = 80;
+        const topOffset = 85;
         const elementPosition = targetEl.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - topOffset;
         window.scrollTo({
@@ -769,25 +787,50 @@ async function fetchGitHubCommitHeatmap() {
   const hoverInfoEl = document.getElementById('gh-hover-info');
   if (!gridEl) return;
 
-  const CACHE_KEY = 'kevin-gh-heatmap-cache-v2';
+  const CACHE_KEY = 'kevin-gh-heatmap-cache-v3';
   const CACHE_TTL = 30 * 60 * 1000; // 30 minutes cache
 
   function formatHumanDate(dateStr) {
     try {
+      if (!dateStr) return '';
       const d = new Date(dateStr);
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      return isNaN(d.getTime()) ? dateStr : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     } catch (e) {
       return dateStr;
     }
   }
 
+  function bindCellHover(cell) {
+    cell.addEventListener('mouseenter', () => {
+      if (hoverInfoEl) {
+        const count = cell.getAttribute('data-count') || '0';
+        const date = cell.getAttribute('data-date') || '';
+        const countText = count === '1' ? '1 contribution' : `${count} contributions`;
+        const dateText = formatHumanDate(date);
+        hoverInfoEl.innerHTML = `<strong>${countText}</strong> on ${dateText}`;
+      }
+    });
+    cell.addEventListener('mouseleave', () => {
+      if (hoverInfoEl) {
+        hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+      }
+    });
+  }
+
+  // 1. Immediately bind hover events to pre-rendered cells in DOM (0ms instant interactivity)
+  gridEl.querySelectorAll('.gh-day-cell').forEach(bindCellHover);
+  const scrollContainer = gridEl.closest('.gh-graph-scroll');
+  if (scrollContainer) {
+    scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+  }
+
   function renderGrid(contributions, total) {
-    gridEl.innerHTML = '';
     if (!Array.isArray(contributions) || contributions.length === 0) {
-      renderDeterministicFallback();
+      if (gridEl.children.length === 0) renderDeterministicFallback();
       return;
     }
 
+    gridEl.innerHTML = '';
     const fragment = document.createDocumentFragment();
     contributions.forEach(item => {
       const cell = document.createElement('div');
@@ -799,24 +842,13 @@ async function fetchGitHubCommitHeatmap() {
       const countText = item.count === 1 ? '1 contribution' : `${item.count} contributions`;
       const dateText = formatHumanDate(item.date);
       cell.title = `${countText} on ${dateText}`;
-
-      cell.addEventListener('mouseenter', () => {
-        if (hoverInfoEl) {
-          hoverInfoEl.innerHTML = `<strong>${countText}</strong> on ${dateText}`;
-        }
-      });
-      cell.addEventListener('mouseleave', () => {
-        if (hoverInfoEl) {
-          hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
-        }
-      });
+      bindCellHover(cell);
 
       fragment.appendChild(cell);
     });
 
     gridEl.appendChild(fragment);
 
-    const scrollContainer = gridEl.closest('.gh-graph-scroll');
     if (scrollContainer) {
       scrollContainer.scrollLeft = scrollContainer.scrollWidth;
     }
@@ -827,6 +859,8 @@ async function fetchGitHubCommitHeatmap() {
   }
 
   function renderDeterministicFallback() {
+    if (gridEl.children.length > 0) return; // Keep pre-rendered cells if already present
+
     gridEl.innerHTML = '';
     const totalDays = 364; // 52 weeks * 7 days
     const fragment = document.createDocumentFragment();
@@ -862,17 +896,7 @@ async function fetchGitHubCommitHeatmap() {
       const countText = count === 1 ? '1 contribution' : `${count} contributions`;
       const dateText = formatHumanDate(dateStr);
       cell.title = `${countText} on ${dateText}`;
-
-      cell.addEventListener('mouseenter', () => {
-        if (hoverInfoEl) {
-          hoverInfoEl.innerHTML = `<strong>${countText}</strong> on ${dateText}`;
-        }
-      });
-      cell.addEventListener('mouseleave', () => {
-        if (hoverInfoEl) {
-          hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
-        }
-      });
+      bindCellHover(cell);
 
       fragment.appendChild(cell);
     }
@@ -880,25 +904,24 @@ async function fetchGitHubCommitHeatmap() {
     gridEl.appendChild(fragment);
     if (totalCommitsEl) totalCommitsEl.textContent = '301+';
 
-    const scrollContainer = gridEl.closest('.gh-graph-scroll');
     if (scrollContainer) {
       scrollContainer.scrollLeft = scrollContainer.scrollWidth;
     }
   }
 
-  // Check cache first
-  try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
+  // 2. Check cache
+  const cached = safeGetStorage(CACHE_KEY);
+  if (cached) {
+    try {
       const parsed = JSON.parse(cached);
       if (parsed && Array.isArray(parsed.contributions) && Date.now() - parsed.timestamp < CACHE_TTL) {
         renderGrid(parsed.contributions, parsed.total);
         return;
       }
-    }
-  } catch (e) {}
+    } catch (e) {}
+  }
 
-  // Fetch live API
+  // 3. Fetch live API
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 6000);
@@ -915,14 +938,11 @@ async function fetchGitHubCommitHeatmap() {
 
       if (contributions.length > 0) {
         renderGrid(contributions, total);
-
-        try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            timestamp: Date.now(),
-            total,
-            contributions
-          }));
-        } catch (e) {}
+        safeSetStorage(CACHE_KEY, JSON.stringify({
+          timestamp: Date.now(),
+          total,
+          contributions
+        }));
         return;
       }
     }
