@@ -131,8 +131,8 @@ if (portraitCard) {
   });
 }
 
-// Interactive 3D Tilt for Featured Project Cards
-document.querySelectorAll('.project-card').forEach(card => {
+// Interactive 3D Tilt for Project, Stat, and Language Cards
+document.querySelectorAll('.project-card, .stat-card, .lang-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
