@@ -875,10 +875,13 @@ window.switchGitHubYear = function(year) {
     scrollContainer.scrollLeft = scrollContainer.scrollWidth;
   }
 
-  // Smooth number update
-  const total = GH_YEAR_TOTALS[yrStr] || 0;
+  // Immediate number & label update (0ms delay)
+  const total = (window.GH_YEAR_TOTALS || GH_YEAR_TOTALS)[yrStr] || 0;
   if (totalCommitsEl) {
-    animateCount(totalCommitsEl, 0, total, 900, '+');
+    totalCommitsEl.textContent = total + '+';
+    if (typeof animateCount === 'function') {
+      animateCount(totalCommitsEl, 0, total, 600, '+');
+    }
   }
   if (activePeriodLabelEl) {
     activePeriodLabelEl.textContent = yrStr;
@@ -887,6 +890,20 @@ window.switchGitHubYear = function(year) {
     hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
   }
 };
+
+window.GH_YEAR_TOTALS = GH_YEAR_TOTALS;
+window.GH_ACTIVE_DAYS = GH_ACTIVE_DAYS;
+
+// Global event delegation for year filter tabs
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.gh-year-tab');
+  if (btn) {
+    const yr = btn.getAttribute('data-year');
+    if (yr && typeof window.switchGitHubYear === 'function') {
+      window.switchGitHubYear(yr);
+    }
+  }
+});
 
 // Real-time GitHub Commit Activity Initializer & Telemetry Sync
 async function fetchGitHubCommitHeatmap() {

@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "prebuild": "cp index.html main.js style.css i18n.js public/ 2>/dev/null || true",
     "dev": "next dev",
     "build": "next build",
     "start": "next start"

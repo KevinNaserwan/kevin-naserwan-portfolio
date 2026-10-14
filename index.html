@@ -2012,10 +2012,9 @@
 
       const total = window.GH_YEAR_TOTALS[yrStr] || 0;
       if (totalCommitsEl) {
+        totalCommitsEl.textContent = total + '+';
         if (typeof window.animateCount === 'function') {
-          window.animateCount(totalCommitsEl, 0, total, 800, '+');
-        } else {
-          totalCommitsEl.textContent = total + '+';
+          window.animateCount(totalCommitsEl, 0, total, 600, '+');
         }
       }
       if (activePeriodLabelEl) {
@@ -2025,9 +2024,20 @@
         hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
       }
     };
+
+    // Global event delegation for year filter tabs
+    document.addEventListener('click', function(e) {
+      var btn = e.target.closest('.gh-year-tab');
+      if (btn) {
+        var yr = btn.getAttribute('data-year');
+        if (yr && typeof window.switchGitHubYear === 'function') {
+          window.switchGitHubYear(yr);
+        }
+      }
+    });
   </script>
 
-  <script src="i18n.js?v=3.0"></script>
-  <script src="main.js?v=3.0"></script>
+  <script src="i18n.js?v=3.2"></script>
+  <script src="main.js?v=3.2"></script>
 </body>
 </html>

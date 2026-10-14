@@ -1,6 +1,43 @@
+// Safe Storage Helpers to prevent any uncaught DOMException/SecurityError
+function safeGetStorage(key, fallback = null) {
+  try {
+    return localStorage.getItem(key) || fallback;
+  } catch (e) {
+    return fallback;
+  }
+}
+
+function safeSetStorage(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch (e) {}
+}
+
+// Global Drawer Controls (Exposed to window immediately for instant click availability)
+function openMenuDrawer() {
+  const drawer = document.getElementById('menu-drawer');
+  if (drawer) {
+    drawer.classList.add('active');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeMenuDrawer() {
+  const drawer = document.getElementById('menu-drawer');
+  if (drawer) {
+    drawer.classList.remove('active');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+}
+
+window.openMenuDrawer = openMenuDrawer;
+window.closeMenuDrawer = closeMenuDrawer;
+
 // Ambient 3D Particle/Mesh Canvas (Ultra-clean, zero AI-slop, kinetic physics)
 const canvas = document.getElementById('ambient-canvas');
-const ctx = canvas.getContext('2d');
+const ctx = canvas ? canvas.getContext('2d') : null;
 
 let width, height;
 let particles = [];
@@ -131,8 +168,8 @@ if (portraitCard) {
   });
 }
 
-// Interactive 3D Tilt for Featured Project Cards
-document.querySelectorAll('.project-card').forEach(card => {
+// Interactive 3D Tilt for Project, Stat, and Language Cards
+document.querySelectorAll('.project-card, .stat-card, .lang-card').forEach(card => {
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -156,15 +193,17 @@ document.querySelectorAll('.project-card').forEach(card => {
 const themeToggle = document.getElementById('theme-toggle');
 const root = document.documentElement;
 
-const savedTheme = localStorage.getItem('kevin-theme') || 'dark';
-root.setAttribute('data-theme', savedTheme);
+const savedTheme = safeGetStorage('kevin-theme', 'dark');
+if (root) root.setAttribute('data-theme', savedTheme);
 
-themeToggle.addEventListener('click', () => {
-  const current = root.getAttribute('data-theme');
-  const next = current === 'light' ? 'dark' : 'light';
-  root.setAttribute('data-theme', next);
-  localStorage.setItem('kevin-theme', next);
-});
+if (themeToggle) {
+  themeToggle.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    safeSetStorage('kevin-theme', next);
+  });
+}
 
 // Modal Zoom for Case Study Sheets
 const modal = document.getElementById('project-modal');
@@ -209,11 +248,64 @@ if (modal) {
   });
 }
 
-// Escape key to close modal
+// Global Click Delegation to guarantee menu button clickability across all viewports
+document.addEventListener('click', (e) => {
+  // Menu bar button click
+  const menuBtn = e.target.closest('#menu-bar-btn');
+  if (menuBtn) {
+    e.preventDefault();
+    e.stopPropagation();
+    openMenuDrawer();
+    return;
+  }
+
+  // Close button click
+  const closeBtn = e.target.closest('#menu-close-btn');
+  if (closeBtn) {
+    e.preventDefault();
+    closeMenuDrawer();
+    return;
+  }
+
+  // Backdrop click
+  const backdrop = e.target.closest('#menu-backdrop');
+  if (backdrop) {
+    e.preventDefault();
+    closeMenuDrawer();
+    return;
+  }
+
+  // Drawer nav item or navbar link click
+  const navItem = e.target.closest('.nav-link, [data-drawer-nav]');
+  if (navItem) {
+    closeMenuDrawer();
+    const href = navItem.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      const targetEl = document.querySelector(href);
+      if (targetEl) {
+        e.preventDefault();
+        const topOffset = 85;
+        const elementPosition = targetEl.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - topOffset;
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }
+});
+
+// Escape key to close modal or drawer
 window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
-    modal.classList.remove('active');
-    document.body.style.overflow = '';
+  if (e.key === 'Escape') {
+    if (modal && modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    if (menuDrawer && menuDrawer.classList.contains('active')) {
+      closeMenuDrawer();
+    }
   }
 });
 
@@ -600,14 +692,299 @@ async function detectDefaultLanguage() {
   setLanguage('en', false);
 }
 
-// Initialize Language and Live Exchange Rates on Page Load & DOMContentLoaded
+function animateCount(el, start, end, duration = 1200, suffix = '+') {
+  if (!el) return;
+  const startTime = performance.now();
+  function step(currentTime) {
+    const progress = Math.min((currentTime - startTime) / duration, 1);
+    const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    const currentVal = Math.floor(start + (end - start) * easeProgress);
+    el.textContent = currentVal + (suffix || '');
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = end + (suffix || '');
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// Real-time GitHub Telemetry & Stats Fetcher with 15-Minute Cache
+async function fetchGitHubRealtimeStats() {
+  const reposEl = document.getElementById('stat-github-repos');
+  const starsEl = document.getElementById('stat-github-stars');
+
+  if (!reposEl && !starsEl) return;
+
+  const CACHE_KEY = 'kevin-gh-telemetry-cache';
+  const TTL = 15 * 60 * 1000; // 15 minutes
+
+  // 1. Check Local Storage Cache first to avoid hitting GitHub API rate limits (60 req/hr)
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Date.now() - parsed.timestamp < TTL) {
+        if (reposEl && parsed.repos != null) animateCount(reposEl, 0, parsed.repos, 900, '+');
+        if (starsEl && parsed.stars != null) animateCount(starsEl, 0, parsed.stars, 900, '+');
+        return;
+      }
+    }
+  } catch (e) {}
+
+  // 2. Fetch fresh telemetry from GitHub API
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
+
+    const [userRes, reposRes] = await Promise.all([
+      fetch('https://api.github.com/users/KevinNaserwan', { signal: controller.signal }),
+      fetch('https://api.github.com/users/KevinNaserwan/repos?per_page=100', { signal: controller.signal })
+    ]);
+    clearTimeout(timeout);
+
+    let publicRepos = 63;
+    let totalStars = 39;
+
+    if (userRes.ok) {
+      const userData = await userRes.json();
+      if (typeof userData.public_repos === 'number') {
+        publicRepos = userData.public_repos;
+      }
+    }
+
+    if (reposRes.ok) {
+      const reposData = await reposRes.json();
+      if (Array.isArray(reposData)) {
+        totalStars = reposData.reduce((acc, r) => acc + (r.stargazers_count || 0), 0);
+      }
+    }
+
+    // Cache the fresh results
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        repos: publicRepos,
+        stars: totalStars
+      }));
+    } catch (e) {}
+
+    // Animate numbers smoothly
+    if (reposEl) animateCount(reposEl, 0, publicRepos, 1200, '+');
+    if (starsEl) animateCount(starsEl, 0, totalStars, 1200, '+');
+
+  } catch (err) {
+    // Graceful fallback to verified numbers
+    if (reposEl) reposEl.textContent = '63+';
+    if (starsEl) starsEl.textContent = '39+';
+  }
+}
+
+// Real-time GitHub Commit Activity & Bulletproof Year Switcher (GitHub Style)
+const GH_YEAR_TOTALS = {
+  '2026': 251,
+  '2025': 80,
+  '2024': 352,
+  '2023': 134
+};
+
+const GH_ACTIVE_DAYS = {
+  "2026-01-06": [1, 1], "2026-01-07": [2, 1], "2026-02-03": [3, 1], "2026-02-26": [7, 2], "2026-03-09": [1, 1], "2026-08-13": [2, 1], "2026-08-18": [70, 4], "2026-09-30": [10, 2], "2026-10-01": [6, 2], "2026-10-11": [27, 4], "2026-10-12": [91, 4], "2026-10-13": [20, 4], "2026-10-14": [11, 3],
+  "2025-02-16": [1, 1], "2025-02-24": [1, 1], "2025-03-02": [8, 4], "2025-03-03": [3, 3], "2025-03-04": [5, 4], "2025-06-27": [5, 4], "2025-06-28": [2, 2], "2025-07-22": [3, 3], "2025-11-11": [2, 2], "2025-11-17": [12, 4], "2025-11-18": [2, 2], "2025-11-21": [4, 4], "2025-11-24": [2, 2], "2025-11-26": [2, 2], "2025-12-14": [20, 4], "2025-12-15": [4, 4], "2025-12-16": [1, 1], "2025-12-19": [3, 3],
+  "2024-01-07": [10, 3], "2024-01-31": [2, 1], "2024-02-01": [1, 1], "2024-02-07": [1, 1], "2024-02-08": [4, 2], "2024-02-10": [2, 1], "2024-02-11": [2, 1], "2024-02-12": [3, 1], "2024-02-13": [2, 1], "2024-02-16": [1, 1], "2024-02-18": [4, 2], "2024-02-20": [2, 1], "2024-04-08": [2, 1], "2024-04-10": [1, 1], "2024-04-28": [1, 1], "2024-05-05": [4, 2], "2024-05-11": [2, 1], "2024-05-13": [1, 1], "2024-05-17": [3, 1], "2024-05-18": [2, 1], "2024-05-19": [1, 1], "2024-05-30": [1, 1], "2024-06-01": [6, 2], "2024-06-06": [2, 1], "2024-06-08": [1, 1], "2024-06-09": [5, 2], "2024-06-10": [5, 2], "2024-06-11": [2, 1], "2024-06-12": [1, 1], "2024-06-13": [3, 1], "2024-06-14": [13, 4], "2024-06-17": [13, 4], "2024-06-18": [3, 1], "2024-06-22": [1, 1], "2024-07-06": [11, 3], "2024-07-12": [19, 4], "2024-07-14": [3, 1], "2024-07-15": [7, 2], "2024-07-18": [8, 3], "2024-07-19": [1, 1], "2024-07-21": [26, 4], "2024-07-22": [13, 4], "2024-07-23": [1, 1], "2024-07-25": [1, 1], "2024-07-27": [3, 1], "2024-07-28": [3, 1], "2024-07-29": [15, 4], "2024-07-30": [11, 3], "2024-08-01": [1, 1], "2024-08-02": [1, 1], "2024-08-03": [2, 1], "2024-08-04": [9, 3], "2024-08-05": [1, 1], "2024-08-11": [8, 3], "2024-08-15": [10, 3], "2024-08-16": [2, 1], "2024-08-17": [1, 1], "2024-08-18": [2, 1], "2024-08-19": [1, 1], "2024-09-05": [6, 2], "2024-09-06": [1, 1], "2024-09-07": [2, 1], "2024-09-09": [2, 1], "2024-09-13": [3, 1], "2024-09-14": [2, 1], "2024-09-15": [3, 1], "2024-09-16": [5, 2], "2024-09-30": [1, 1], "2024-10-01": [2, 1], "2024-10-05": [5, 2], "2024-10-06": [5, 2], "2024-10-26": [1, 1], "2024-10-30": [1, 1], "2024-10-31": [2, 1], "2024-11-02": [1, 1], "2024-11-03": [1, 1], "2024-11-05": [5, 2], "2024-11-14": [1, 1], "2024-11-23": [2, 1], "2024-11-24": [1, 1], "2024-11-25": [2, 1], "2024-11-26": [5, 2], "2024-11-27": [4, 2], "2024-11-30": [5, 2], "2024-12-03": [3, 1], "2024-12-05": [1, 1], "2024-12-09": [2, 1], "2024-12-11": [4, 2], "2024-12-12": [1, 1], "2024-12-21": [3, 1], "2024-12-22": [3, 1],
+  "2023-02-26": [3, 1], "2023-03-03": [4, 2], "2023-03-04": [2, 1], "2023-03-05": [3, 1], "2023-03-07": [2, 1], "2023-03-08": [2, 1], "2023-03-09": [1, 1], "2023-03-10": [1, 1], "2023-03-11": [1, 1], "2023-03-13": [5, 2], "2023-03-15": [5, 2], "2023-03-17": [2, 1], "2023-03-18": [4, 2], "2023-03-19": [4, 2], "2023-03-20": [2, 1], "2023-03-21": [3, 1], "2023-03-24": [3, 1], "2023-03-28": [1, 1], "2023-03-29": [2, 1], "2023-03-30": [1, 1], "2023-04-21": [1, 1], "2023-04-22": [2, 1], "2023-05-10": [1, 1], "2023-06-22": [8, 3], "2023-06-25": [12, 4], "2023-06-26": [12, 4], "2023-06-27": [8, 3], "2023-07-11": [4, 2], "2023-07-12": [5, 2], "2023-07-13": [3, 1], "2023-07-17": [1, 1], "2023-07-18": [1, 1], "2023-07-19": [1, 1], "2023-07-20": [1, 1], "2023-09-20": [2, 1], "2023-10-15": [2, 1], "2023-10-30": [2, 1], "2023-10-31": [3, 1], "2023-11-01": [3, 1], "2023-11-02": [2, 1], "2023-11-25": [3, 1], "2023-11-27": [2, 1], "2023-12-03": [1, 1], "2023-12-04": [1, 1], "2023-12-09": [2, 1]
+};
+
+window.switchGitHubYear = function(year) {
+  const yrStr = String(year);
+  const gridEl = document.getElementById('gh-heatmap-grid');
+  const totalCommitsEl = document.getElementById('gh-total-commits');
+  const activePeriodLabelEl = document.getElementById('gh-active-period-label');
+  const hoverInfoEl = document.getElementById('gh-hover-info');
+  const scrollContainer = document.querySelector('.gh-graph-scroll');
+
+  // 1. Highlight clicked tab in UI
+  document.querySelectorAll('.gh-year-tab').forEach(tab => {
+    if (tab.getAttribute('data-year') === yrStr) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+
+  if (!gridEl) return;
+
+  // 2. Generate calendar days for selected year
+  const yrNum = parseInt(yrStr) || 2026;
+  const isLeap = (yrNum % 4 === 0 && yrNum % 100 !== 0) || (yrNum % 400 === 0);
+  const totalDays = isLeap ? 366 : 365;
+  const startDate = new Date(Date.UTC(yrNum, 0, 1));
+  const startDayOfWeek = startDate.getUTCDay(); // 0 (Sun) to 6 (Sat)
+
+  gridEl.innerHTML = '';
+  const fragment = document.createDocumentFragment();
+
+  // Filler cells to align Jan 1 with its exact day of week
+  for (let f = 0; f < startDayOfWeek; f++) {
+    const filler = document.createElement('div');
+    filler.className = 'gh-day-cell gh-day-filler';
+    filler.style.visibility = 'hidden';
+    filler.style.pointerEvents = 'none';
+    fragment.appendChild(filler);
+  }
+
+  // Generate 365 (or 366) days
+  for (let i = 0; i < totalDays; i++) {
+    const d = new Date(startDate.getTime() + i * 86400000);
+    const yyyy = d.getUTCFullYear();
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd}`;
+
+    const activeInfo = GH_ACTIVE_DAYS[dateStr];
+    const count = activeInfo ? activeInfo[0] : 0;
+    const lvl = activeInfo ? activeInfo[1] : 0;
+
+    const cell = document.createElement('div');
+    cell.className = `gh-day-cell lvl-${lvl}`;
+    cell.setAttribute('data-date', dateStr);
+    cell.setAttribute('data-count', String(count));
+
+    const countText = count === 1 ? '1 contribution' : `${count} contributions`;
+    const dateText = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+    cell.title = `${countText} on ${dateText}`;
+
+    cell.addEventListener('mouseenter', () => {
+      if (hoverInfoEl) {
+        hoverInfoEl.innerHTML = `<strong>${countText}</strong> on ${dateText}`;
+      }
+    });
+    cell.addEventListener('mouseleave', () => {
+      if (hoverInfoEl) {
+        hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+      }
+    });
+
+    fragment.appendChild(cell);
+  }
+
+  gridEl.appendChild(fragment);
+
+  // Auto-scroll to latest contributions
+  if (scrollContainer) {
+    scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+  }
+
+  // Immediate number & label update (0ms delay)
+  const total = (window.GH_YEAR_TOTALS || GH_YEAR_TOTALS)[yrStr] || 0;
+  if (totalCommitsEl) {
+    totalCommitsEl.textContent = total + '+';
+    if (typeof animateCount === 'function') {
+      animateCount(totalCommitsEl, 0, total, 600, '+');
+    }
+  }
+  if (activePeriodLabelEl) {
+    activePeriodLabelEl.textContent = yrStr;
+  }
+  if (hoverInfoEl) {
+    hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+  }
+};
+
+window.GH_YEAR_TOTALS = GH_YEAR_TOTALS;
+window.GH_ACTIVE_DAYS = GH_ACTIVE_DAYS;
+
+// Global event delegation for year filter tabs
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.gh-year-tab');
+  if (btn) {
+    const yr = btn.getAttribute('data-year');
+    if (yr && typeof window.switchGitHubYear === 'function') {
+      window.switchGitHubYear(yr);
+    }
+  }
+});
+
+// Real-time GitHub Commit Activity Initializer & Telemetry Sync
+async function fetchGitHubCommitHeatmap() {
+  const gridEl = document.getElementById('gh-heatmap-grid');
+  const hoverInfoEl = document.getElementById('gh-hover-info');
+  const scrollContainer = document.querySelector('.gh-graph-scroll');
+  if (!gridEl) return;
+
+  function bindCellHover(cell) {
+    cell.addEventListener('mouseenter', () => {
+      if (hoverInfoEl) {
+        const count = cell.getAttribute('data-count') || '0';
+        const date = cell.getAttribute('data-date') || '';
+        const countText = count === '1' ? '1 contribution' : `${count} contributions`;
+        let dateText = date;
+        try {
+          const d = new Date(date);
+          dateText = isNaN(d.getTime()) ? date : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        } catch (e) {}
+        hoverInfoEl.innerHTML = `<strong>${countText}</strong> on ${dateText}`;
+      }
+    });
+    cell.addEventListener('mouseleave', () => {
+      if (hoverInfoEl) {
+        hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+      }
+    });
+  }
+
+  // 1. Immediately bind hover events to pre-rendered cells in DOM (0ms instant)
+  gridEl.querySelectorAll('.gh-day-cell:not(.gh-day-filler)').forEach(bindCellHover);
+  if (scrollContainer) {
+    scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+  }
+
+  // 2. Fetch live updates in the background and update badges
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 7000);
+
+    const res = await fetch('https://github-contributions-api.jogruber.de/v4/KevinNaserwan?y=all', {
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.total) {
+        Object.keys(GH_YEAR_TOTALS).forEach(yr => {
+          if (typeof data.total[yr] === 'number') {
+            GH_YEAR_TOTALS[yr] = data.total[yr];
+            const badge = document.getElementById(`badge-${yr}`);
+            if (badge) badge.textContent = data.total[yr];
+          }
+        });
+      }
+      if (data && Array.isArray(data.contributions)) {
+        data.contributions.forEach(c => {
+          if (c.count > 0 && c.date) {
+            GH_ACTIVE_DAYS[c.date] = [c.count, c.level || 1];
+          }
+        });
+      }
+    }
+  } catch (err) {
+    // Graceful fallback to verified built-in data
+  }
+}
+
+// Initialize Language, Live Exchange Rates, and Realtime GitHub Telemetry
 fetchLiveExchangeRates();
 detectDefaultLanguage();
+fetchGitHubRealtimeStats();
+fetchGitHubCommitHeatmap();
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     fetchLiveExchangeRates();
     detectDefaultLanguage();
+    fetchGitHubRealtimeStats();
+    fetchGitHubCommitHeatmap();
   });
 }
 

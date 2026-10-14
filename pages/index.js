@@ -26,8 +26,8 @@ export async function getStaticProps() {
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
   let content = bodyMatch ? bodyMatch[1] : html;
 
-  // Remove script tags inside body to prevent double execution with next/script
-  content = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+  // Remove external script tags with src to prevent duplicate execution with next/script
+  content = content.replace(/<script\b[^>]*src=[^>]*><\/script>/gi, '');
 
   return {
     props: {
