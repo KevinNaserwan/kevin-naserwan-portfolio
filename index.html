@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=2.6">
+  <link rel="stylesheet" href="style.css?v=3.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1919,7 +1919,115 @@
     </div>
   </footer>
 
-  <script src="i18n.js?v=2.6"></script>
-  <script src="main.js?v=2.6"></script>
+  <script>
+    // Bulletproof synchronous Year Switcher (always available immediately)
+    window.GH_YEAR_TOTALS = {
+      '2026': 251,
+      '2025': 80,
+      '2024': 352,
+      '2023': 134
+    };
+
+    window.GH_ACTIVE_DAYS = {
+      "2026-01-06": [1, 1], "2026-01-07": [2, 1], "2026-02-03": [3, 1], "2026-02-26": [7, 2], "2026-03-09": [1, 1], "2026-08-13": [2, 1], "2026-08-18": [70, 4], "2026-09-30": [10, 2], "2026-10-01": [6, 2], "2026-10-11": [27, 4], "2026-10-12": [91, 4], "2026-10-13": [20, 4], "2026-10-14": [11, 3],
+      "2025-02-16": [1, 1], "2025-02-24": [1, 1], "2025-03-02": [8, 4], "2025-03-03": [3, 3], "2025-03-04": [5, 4], "2025-06-27": [5, 4], "2025-06-28": [2, 2], "2025-07-22": [3, 3], "2025-11-11": [2, 2], "2025-11-17": [12, 4], "2025-11-18": [2, 2], "2025-11-21": [4, 4], "2025-11-24": [2, 2], "2025-11-26": [2, 2], "2025-12-14": [20, 4], "2025-12-15": [4, 4], "2025-12-16": [1, 1], "2025-12-19": [3, 3],
+      "2024-01-07": [10, 3], "2024-01-31": [2, 1], "2024-02-01": [1, 1], "2024-02-07": [1, 1], "2024-02-08": [4, 2], "2024-02-10": [2, 1], "2024-02-11": [2, 1], "2024-02-12": [3, 1], "2024-02-13": [2, 1], "2024-02-16": [1, 1], "2024-02-18": [4, 2], "2024-02-20": [2, 1], "2024-04-08": [2, 1], "2024-04-10": [1, 1], "2024-04-28": [1, 1], "2024-05-05": [4, 2], "2024-05-11": [2, 1], "2024-05-13": [1, 1], "2024-05-17": [3, 1], "2024-05-18": [2, 1], "2024-05-19": [1, 1], "2024-05-30": [1, 1], "2024-06-01": [6, 2], "2024-06-06": [2, 1], "2024-06-08": [1, 1], "2024-06-09": [5, 2], "2024-06-10": [5, 2], "2024-06-11": [2, 1], "2024-06-12": [1, 1], "2024-06-13": [3, 1], "2024-06-14": [13, 4], "2024-06-17": [13, 4], "2024-06-18": [3, 1], "2024-06-22": [1, 1], "2024-07-06": [11, 3], "2024-07-12": [19, 4], "2024-07-14": [3, 1], "2024-07-15": [7, 2], "2024-07-18": [8, 3], "2024-07-19": [1, 1], "2024-07-21": [26, 4], "2024-07-22": [13, 4], "2024-07-23": [1, 1], "2024-07-25": [1, 1], "2024-07-27": [3, 1], "2024-07-28": [3, 1], "2024-07-29": [15, 4], "2024-07-30": [11, 3], "2024-08-01": [1, 1], "2024-08-02": [1, 1], "2024-08-03": [2, 1], "2024-08-04": [9, 3], "2024-08-05": [1, 1], "2024-08-11": [8, 3], "2024-08-15": [10, 3], "2024-08-16": [2, 1], "2024-08-17": [1, 1], "2024-08-18": [2, 1], "2024-08-19": [1, 1], "2024-09-05": [6, 2], "2024-09-06": [1, 1], "2024-09-07": [2, 1], "2024-09-09": [2, 1], "2024-09-13": [3, 1], "2024-09-14": [2, 1], "2024-09-15": [3, 1], "2024-09-16": [5, 2], "2024-09-30": [1, 1], "2024-10-01": [2, 1], "2024-10-05": [5, 2], "2024-10-06": [5, 2], "2024-10-26": [1, 1], "2024-10-30": [1, 1], "2024-10-31": [2, 1], "2024-11-02": [1, 1], "2024-11-03": [1, 1], "2024-11-05": [5, 2], "2024-11-14": [1, 1], "2024-11-23": [2, 1], "2024-11-24": [1, 1], "2024-11-25": [2, 1], "2024-11-26": [5, 2], "2024-11-27": [4, 2], "2024-11-30": [5, 2], "2024-12-03": [3, 1], "2024-12-05": [1, 1], "2024-12-09": [2, 1], "2024-12-11": [4, 2], "2024-12-12": [1, 1], "2024-12-21": [3, 1], "2024-12-22": [3, 1],
+      "2023-02-26": [3, 1], "2023-03-03": [4, 2], "2023-03-04": [2, 1], "2023-03-05": [3, 1], "2023-03-07": [2, 1], "2023-03-08": [2, 1], "2023-03-09": [1, 1], "2023-03-10": [1, 1], "2023-03-11": [1, 1], "2023-03-13": [5, 2], "2023-03-15": [5, 2], "2023-03-17": [2, 1], "2023-03-18": [4, 2], "2023-03-19": [4, 2], "2023-03-20": [2, 1], "2023-03-21": [3, 1], "2023-03-24": [3, 1], "2023-03-28": [1, 1], "2023-03-29": [2, 1], "2023-03-30": [1, 1], "2023-04-21": [1, 1], "2023-04-22": [2, 1], "2023-05-10": [1, 1], "2023-06-22": [8, 3], "2023-06-25": [12, 4], "2023-06-26": [12, 4], "2023-06-27": [8, 3], "2023-07-11": [4, 2], "2023-07-12": [5, 2], "2023-07-13": [3, 1], "2023-07-17": [1, 1], "2023-07-18": [1, 1], "2023-07-19": [1, 1], "2023-07-20": [1, 1], "2023-09-20": [2, 1], "2023-10-15": [2, 1], "2023-10-30": [2, 1], "2023-10-31": [3, 1], "2023-11-01": [3, 1], "2023-11-02": [2, 1], "2023-11-25": [3, 1], "2023-11-27": [2, 1], "2023-12-03": [1, 1], "2023-12-04": [1, 1], "2023-12-09": [2, 1]
+    };
+
+    window.switchGitHubYear = function(year) {
+      const yrStr = String(year);
+      const gridEl = document.getElementById('gh-heatmap-grid');
+      const totalCommitsEl = document.getElementById('gh-total-commits');
+      const activePeriodLabelEl = document.getElementById('gh-active-period-label');
+      const hoverInfoEl = document.getElementById('gh-hover-info');
+      const scrollContainer = document.querySelector('.gh-graph-scroll');
+
+      // 1. Highlight tab button
+      document.querySelectorAll('.gh-year-tab').forEach(tab => {
+        if (tab.getAttribute('data-year') === yrStr) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+
+      if (!gridEl) return;
+
+      // 2. Generate days for the year
+      const yrNum = parseInt(yrStr) || 2026;
+      const isLeap = (yrNum % 4 === 0 && yrNum % 100 !== 0) || (yrNum % 400 === 0);
+      const totalDays = isLeap ? 366 : 365;
+      const startDate = new Date(Date.UTC(yrNum, 0, 1));
+      const startDayOfWeek = startDate.getUTCDay();
+
+      gridEl.innerHTML = '';
+      const fragment = document.createDocumentFragment();
+
+      // Weekday filler cells
+      for (let f = 0; f < startDayOfWeek; f++) {
+        const filler = document.createElement('div');
+        filler.className = 'gh-day-cell gh-day-filler';
+        filler.style.visibility = 'hidden';
+        filler.style.pointerEvents = 'none';
+        fragment.appendChild(filler);
+      }
+
+      // Day cells
+      for (let i = 0; i < totalDays; i++) {
+        const d = new Date(startDate.getTime() + i * 86400000);
+        const yyyy = d.getUTCFullYear();
+        const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(d.getUTCDate()).padStart(2, '0');
+        const dateStr = yyyy + '-' + mm + '-' + dd;
+
+        const activeInfo = window.GH_ACTIVE_DAYS[dateStr];
+        const count = activeInfo ? activeInfo[0] : 0;
+        const lvl = activeInfo ? activeInfo[1] : 0;
+
+        const cell = document.createElement('div');
+        cell.className = 'gh-day-cell lvl-' + lvl;
+        cell.setAttribute('data-date', dateStr);
+        cell.setAttribute('data-count', String(count));
+
+        const countText = count === 1 ? '1 contribution' : count + ' contributions';
+        const dateText = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+        cell.title = countText + ' on ' + dateText;
+
+        cell.addEventListener('mouseenter', function() {
+          if (hoverInfoEl) hoverInfoEl.innerHTML = '<strong>' + countText + '</strong> on ' + dateText;
+        });
+        cell.addEventListener('mouseleave', function() {
+          if (hoverInfoEl) hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+        });
+
+        fragment.appendChild(cell);
+      }
+
+      gridEl.appendChild(fragment);
+
+      if (scrollContainer) {
+        scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+      }
+
+      const total = window.GH_YEAR_TOTALS[yrStr] || 0;
+      if (totalCommitsEl) {
+        if (typeof window.animateCount === 'function') {
+          window.animateCount(totalCommitsEl, 0, total, 800, '+');
+        } else {
+          totalCommitsEl.textContent = total + '+';
+        }
+      }
+      if (activePeriodLabelEl) {
+        activePeriodLabelEl.textContent = yrStr;
+      }
+      if (hoverInfoEl) {
+        hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+      }
+    };
+  </script>
+
+  <script src="i18n.js?v=3.0"></script>
+  <script src="main.js?v=3.0"></script>
 </body>
 </html>

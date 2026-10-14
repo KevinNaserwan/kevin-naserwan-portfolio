@@ -692,6 +692,23 @@ async function detectDefaultLanguage() {
   setLanguage('en', false);
 }
 
+function animateCount(el, start, end, duration = 1200, suffix = '+') {
+  if (!el) return;
+  const startTime = performance.now();
+  function step(currentTime) {
+    const progress = Math.min((currentTime - startTime) / duration, 1);
+    const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+    const currentVal = Math.floor(start + (end - start) * easeProgress);
+    el.textContent = currentVal + (suffix || '');
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      el.textContent = end + (suffix || '');
+    }
+  }
+  requestAnimationFrame(step);
+}
+
 // Real-time GitHub Telemetry & Stats Fetcher with 15-Minute Cache
 async function fetchGitHubRealtimeStats() {
   const reposEl = document.getElementById('stat-github-repos');
@@ -701,23 +718,6 @@ async function fetchGitHubRealtimeStats() {
 
   const CACHE_KEY = 'kevin-gh-telemetry-cache';
   const TTL = 15 * 60 * 1000; // 15 minutes
-
-  function animateCount(el, start, end, duration = 1200, suffix = '+') {
-    if (!el) return;
-    const startTime = performance.now();
-    function step(currentTime) {
-      const progress = Math.min((currentTime - startTime) / duration, 1);
-      const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-      const currentVal = Math.floor(start + (end - start) * easeProgress);
-      el.textContent = currentVal + (suffix || '');
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        el.textContent = end + (suffix || '');
-      }
-    }
-    requestAnimationFrame(step);
-  }
 
   // 1. Check Local Storage Cache first to avoid hitting GitHub API rate limits (60 req/hr)
   try {
