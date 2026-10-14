@@ -8,7 +8,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="alternate icon" href="/favicon.ico">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="style.css?v=2.5">
+  <link rel="stylesheet" href="style.css?v=2.6">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -749,9 +749,8 @@
       </div>
     </div>
 
-    <!-- Right Sidebar: Year & Month Filter Tabs (GitHub Style) -->
+    <!-- Right Sidebar: Year Filter Tabs (GitHub Style) -->
     <div class="gh-sidebar-col">
-      <!-- Year Tabs -->
       <div class="gh-tab-group">
         <div class="gh-group-label">
           <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor">
@@ -760,51 +759,22 @@
           <span>Filter Tahun</span>
         </div>
         <div class="gh-year-tabs" id="gh-year-tabs">
-          <button class="gh-year-tab active" data-year="2026">
+          <button class="gh-year-tab active" data-year="2026" onclick="switchGitHubYear('2026')">
             <span class="tab-year-text">2026</span>
             <span class="tab-year-count" id="badge-2026">251</span>
           </button>
-          <button class="gh-year-tab" data-year="2025">
+          <button class="gh-year-tab" data-year="2025" onclick="switchGitHubYear('2025')">
             <span class="tab-year-text">2025</span>
             <span class="tab-year-count" id="badge-2025">80</span>
           </button>
-          <button class="gh-year-tab" data-year="2024">
+          <button class="gh-year-tab" data-year="2024" onclick="switchGitHubYear('2024')">
             <span class="tab-year-text">2024</span>
             <span class="tab-year-count" id="badge-2024">352</span>
           </button>
-          <button class="gh-year-tab" data-year="2023">
+          <button class="gh-year-tab" data-year="2023" onclick="switchGitHubYear('2023')">
             <span class="tab-year-text">2023</span>
             <span class="tab-year-count" id="badge-2023">134</span>
           </button>
-          <button class="gh-year-tab" data-year="last">
-            <span class="tab-year-text">Last Year</span>
-            <span class="tab-year-count" id="badge-last">331</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Month Filter Tabs -->
-      <div class="gh-tab-group gh-month-group">
-        <div class="gh-group-label">
-          <svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor">
-            <path d="M1.5 3a.5.5 0 000 1h13a.5.5 0 000-1h-13zm0 5a.5.5 0 000 1h13a.5.5 0 000-1h-13zm0 5a.5.5 0 000 1h13a.5.5 0 000-1h-13z"/>
-          </svg>
-          <span>Filter Bulan</span>
-        </div>
-        <div class="gh-month-tabs" id="gh-month-tabs">
-          <button class="gh-month-tab active" data-month="all">All</button>
-          <button class="gh-month-tab" data-month="01">Jan</button>
-          <button class="gh-month-tab" data-month="02">Feb</button>
-          <button class="gh-month-tab" data-month="03">Mar</button>
-          <button class="gh-month-tab" data-month="04">Apr</button>
-          <button class="gh-month-tab" data-month="05">May</button>
-          <button class="gh-month-tab" data-month="06">Jun</button>
-          <button class="gh-month-tab" data-month="07">Jul</button>
-          <button class="gh-month-tab" data-month="08">Aug</button>
-          <button class="gh-month-tab" data-month="09">Sep</button>
-          <button class="gh-month-tab" data-month="10">Oct</button>
-          <button class="gh-month-tab" data-month="11">Nov</button>
-          <button class="gh-month-tab" data-month="12">Dec</button>
         </div>
       </div>
     </div>
@@ -1949,7 +1919,7 @@
     </div>
   </footer>
 
-  <script src="i18n.js?v=2.5"></script>
-  <script src="main.js?v=2.5"></script>
+  <script src="i18n.js?v=2.6"></script>
+  <script src="main.js?v=2.6"></script>
 </body>
 </html>
