@@ -780,15 +780,41 @@ async function fetchGitHubRealtimeStats() {
   }
 }
 
-// Real-time GitHub Commit Activity & 52-Week Green Squares Heatmap
+// Real-time GitHub Commit Activity & 52-Week Green Squares Heatmap (GitHub Style)
 async function fetchGitHubCommitHeatmap() {
   const gridEl = document.getElementById('gh-heatmap-grid');
   const totalCommitsEl = document.getElementById('gh-total-commits');
+  const activePeriodLabelEl = document.getElementById('gh-active-period-label');
   const hoverInfoEl = document.getElementById('gh-hover-info');
+  const yearTabsContainer = document.getElementById('gh-year-tabs');
+  const monthTabsContainer = document.getElementById('gh-month-tabs');
   if (!gridEl) return;
 
-  const CACHE_KEY = 'kevin-gh-heatmap-cache-v3';
+  const CACHE_KEY = 'kevin-gh-heatmap-all-v4';
   const CACHE_TTL = 30 * 60 * 1000; // 30 minutes cache
+
+  let currentYear = '2026';
+  let currentMonth = 'all';
+  let allContributions = [];
+  let allTotals = {
+    '2026': 251,
+    '2025': 80,
+    '2024': 352,
+    '2023': 134,
+    'last': 331
+  };
+
+  const MONTH_NAMES = {
+    '01': 'Jan', '02': 'Feb', '03': 'Mar', '04': 'Apr',
+    '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Aug',
+    '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dec'
+  };
+
+  const MONTH_FULL = {
+    '01': 'January', '02': 'February', '03': 'March', '04': 'April',
+    '05': 'May', '06': 'June', '07': 'July', '08': 'August',
+    '09': 'September', '10': 'October', '11': 'November', '12': 'December'
+  };
 
   function formatHumanDate(dateStr) {
     try {
@@ -798,6 +824,16 @@ async function fetchGitHubCommitHeatmap() {
     } catch (e) {
       return dateStr;
     }
+  }
+
+  function updateBadgeCounts(totals) {
+    if (!totals) return;
+    Object.keys(totals).forEach(yr => {
+      const badge = document.getElementById(`badge-${yr}`);
+      if (badge && typeof totals[yr] === 'number') {
+        badge.textContent = totals[yr];
+      }
+    });
   }
 
   function bindCellHover(cell) {
@@ -812,7 +848,12 @@ async function fetchGitHubCommitHeatmap() {
     });
     cell.addEventListener('mouseleave', () => {
       if (hoverInfoEl) {
-        hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+        if (currentMonth !== 'all') {
+          const monthName = MONTH_FULL[currentMonth] || currentMonth;
+          hoverInfoEl.innerHTML = `Filtered to <strong>${monthName} ${currentYear}</strong> · Click All to reset`;
+        } else {
+          hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+        }
       }
     });
   }
@@ -824,26 +865,93 @@ async function fetchGitHubCommitHeatmap() {
     scrollContainer.scrollLeft = scrollContainer.scrollWidth;
   }
 
-  function renderGrid(contributions, total) {
-    if (!Array.isArray(contributions) || contributions.length === 0) {
-      if (gridEl.children.length === 0) renderDeterministicFallback();
+  function applyMonthFilter() {
+    const cells = gridEl.querySelectorAll('.gh-day-cell');
+    let monthTotal = 0;
+
+    if (currentMonth === 'all') {
+      cells.forEach(cell => {
+        cell.classList.remove('dimmed');
+        cell.classList.remove('highlighted');
+      });
+      const yrTotal = allTotals[currentYear] || (currentYear === 'last' ? (allTotals.last || 331) : 251);
+      if (totalCommitsEl) animateCount(totalCommitsEl, parseInt(totalCommitsEl.textContent) || 0, yrTotal, 800, '+');
+      if (activePeriodLabelEl) activePeriodLabelEl.textContent = currentYear === 'last' ? 'the last year' : currentYear;
+      if (hoverInfoEl) hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
+    } else {
+      cells.forEach(cell => {
+        const dateStr = cell.getAttribute('data-date') || '';
+        const count = parseInt(cell.getAttribute('data-count')) || 0;
+        const cellMonth = dateStr.split('-')[1];
+
+        if (cellMonth === currentMonth) {
+          cell.classList.remove('dimmed');
+          cell.classList.add('highlighted');
+          monthTotal += count;
+        } else {
+          cell.classList.add('dimmed');
+          cell.classList.remove('highlighted');
+        }
+      });
+
+      const monthName = MONTH_FULL[currentMonth] || currentMonth;
+      if (totalCommitsEl) animateCount(totalCommitsEl, parseInt(totalCommitsEl.textContent) || 0, monthTotal, 800);
+      if (activePeriodLabelEl) activePeriodLabelEl.textContent = `${monthName} ${currentYear === 'last' ? '' : currentYear}`;
+      if (hoverInfoEl) hoverInfoEl.innerHTML = `Showing <strong>${monthName} ${currentYear}</strong> (${monthTotal} commits) · Click All to reset`;
+    }
+  }
+
+  function renderYear(year) {
+    currentYear = year;
+    currentMonth = 'all';
+
+    // Update active class on year tabs
+    if (yearTabsContainer) {
+      yearTabsContainer.querySelectorAll('.gh-year-tab').forEach(tab => {
+        if (tab.getAttribute('data-year') === year) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+    }
+
+    // Reset month tabs to 'all'
+    if (monthTabsContainer) {
+      monthTabsContainer.querySelectorAll('.gh-month-tab').forEach(tab => {
+        if (tab.getAttribute('data-month') === 'all') {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+    }
+
+    let yearContributions = [];
+    if (year === 'last') {
+      yearContributions = allContributions.slice(-364);
+    } else {
+      yearContributions = allContributions.filter(c => c.date && c.date.startsWith(year));
+    }
+
+    if (yearContributions.length === 0) {
+      fetchSingleYear(year);
       return;
     }
 
     gridEl.innerHTML = '';
     const fragment = document.createDocumentFragment();
-    contributions.forEach(item => {
+    yearContributions.forEach(item => {
       const cell = document.createElement('div');
       const lvl = typeof item.level === 'number' ? Math.min(Math.max(item.level, 0), 4) : 0;
       cell.className = `gh-day-cell lvl-${lvl}`;
       cell.setAttribute('data-date', item.date);
       cell.setAttribute('data-count', item.count);
-      
+
       const countText = item.count === 1 ? '1 contribution' : `${item.count} contributions`;
       const dateText = formatHumanDate(item.date);
       cell.title = `${countText} on ${dateText}`;
       bindCellHover(cell);
-
       fragment.appendChild(cell);
     });
 
@@ -853,102 +961,119 @@ async function fetchGitHubCommitHeatmap() {
       scrollContainer.scrollLeft = scrollContainer.scrollWidth;
     }
 
-    if (totalCommitsEl && typeof total === 'number') {
-      animateCount(totalCommitsEl, 0, total, 1200, '+');
+    const yrTotal = allTotals[year] || yearContributions.reduce((sum, c) => sum + (c.count || 0), 0);
+    if (totalCommitsEl) {
+      animateCount(totalCommitsEl, 0, yrTotal, 1000, '+');
+    }
+    if (activePeriodLabelEl) {
+      activePeriodLabelEl.textContent = year === 'last' ? 'the last year' : year;
+    }
+    if (hoverInfoEl) {
+      hoverInfoEl.textContent = 'Continuous daily shipping & microservice updates';
     }
   }
 
-  function renderDeterministicFallback() {
-    if (gridEl.children.length > 0) return; // Keep pre-rendered cells if already present
-
-    gridEl.innerHTML = '';
-    const totalDays = 364; // 52 weeks * 7 days
-    const fragment = document.createDocumentFragment();
-    const now = new Date();
-
-    for (let i = totalDays - 1; i >= 0; i--) {
-      const d = new Date(now);
-      d.setDate(d.getDate() - i);
-      const dateStr = d.toISOString().split('T')[0];
-
-      let count = 0;
-      let lvl = 0;
-      const seed = (i * 9301 + 49297) % 233280;
-      const rand = seed / 233280;
-
-      if (i % 7 !== 0 && i % 7 !== 6) {
-        if (rand > 0.65) {
-          count = Math.floor(rand * 6) + 1;
-          lvl = count > 4 ? 3 : (count > 2 ? 2 : 1);
-        } else if (rand > 0.45) {
-          count = Math.floor(rand * 3) + 1;
-          lvl = 1;
+  // Setup click listeners on Year Tabs
+  if (yearTabsContainer) {
+    yearTabsContainer.querySelectorAll('.gh-year-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const yr = tab.getAttribute('data-year');
+        if (yr && yr !== currentYear) {
+          renderYear(yr);
         }
-      } else if (rand > 0.85) {
-        count = Math.floor(rand * 4) + 1;
-        lvl = 1;
-      }
-
-      const cell = document.createElement('div');
-      cell.className = `gh-day-cell lvl-${lvl}`;
-      cell.setAttribute('data-date', dateStr);
-      cell.setAttribute('data-count', count);
-      const countText = count === 1 ? '1 contribution' : `${count} contributions`;
-      const dateText = formatHumanDate(dateStr);
-      cell.title = `${countText} on ${dateText}`;
-      bindCellHover(cell);
-
-      fragment.appendChild(cell);
-    }
-
-    gridEl.appendChild(fragment);
-    if (totalCommitsEl) totalCommitsEl.textContent = '301+';
-
-    if (scrollContainer) {
-      scrollContainer.scrollLeft = scrollContainer.scrollWidth;
-    }
+      });
+    });
   }
 
-  // 2. Check cache
+  // Setup click listeners on Month Tabs
+  if (monthTabsContainer) {
+    monthTabsContainer.querySelectorAll('.gh-month-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        e.preventDefault();
+        const m = tab.getAttribute('data-month');
+        if (m) {
+          currentMonth = m;
+          monthTabsContainer.querySelectorAll('.gh-month-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          applyMonthFilter();
+        }
+      });
+    });
+  }
+
+  async function fetchSingleYear(year) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(`https://github-contributions-api.jogruber.de/v4/KevinNaserwan?y=${year}`, {
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.contributions)) {
+          allContributions = allContributions.concat(data.contributions.filter(c => !allContributions.some(existing => existing.date === c.date)));
+          if (data.total) {
+            allTotals = { ...allTotals, ...data.total };
+            updateBadgeCounts(allTotals);
+          }
+          renderYear(year);
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 2. Check cached dataset
   const cached = safeGetStorage(CACHE_KEY);
   if (cached) {
     try {
       const parsed = JSON.parse(cached);
       if (parsed && Array.isArray(parsed.contributions) && Date.now() - parsed.timestamp < CACHE_TTL) {
-        renderGrid(parsed.contributions, parsed.total);
+        allContributions = parsed.contributions;
+        if (parsed.total) {
+          allTotals = { ...allTotals, ...parsed.total };
+          updateBadgeCounts(allTotals);
+        }
+        renderYear('2026');
         return;
       }
     } catch (e) {}
   }
 
-  // 3. Fetch live API
+  // 3. Fetch comprehensive all-year dataset from API in background
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
-    const res = await fetch('https://github-contributions-api.jogruber.de/v4/KevinNaserwan?y=last', {
+    const res = await fetch('https://github-contributions-api.jogruber.de/v4/KevinNaserwan?y=all', {
       signal: controller.signal
     });
     clearTimeout(timeout);
 
     if (res.ok) {
       const data = await res.json();
-      const total = (data.total && data.total.lastYear) ? data.total.lastYear : 301;
-      const contributions = data.contributions || [];
+      if (data && Array.isArray(data.contributions) && data.contributions.length > 0) {
+        allContributions = data.contributions;
+        if (data.total) {
+          allTotals = { ...allTotals, ...data.total };
+          const lastYearSum = data.contributions.slice(-365).reduce((acc, c) => acc + (c.count || 0), 0);
+          allTotals['last'] = lastYearSum || 331;
+          updateBadgeCounts(allTotals);
+        }
 
-      if (contributions.length > 0) {
-        renderGrid(contributions, total);
         safeSetStorage(CACHE_KEY, JSON.stringify({
           timestamp: Date.now(),
-          total,
-          contributions
+          total: allTotals,
+          contributions: allContributions
         }));
+
+        renderYear(currentYear);
         return;
       }
     }
-    renderDeterministicFallback();
   } catch (err) {
-    renderDeterministicFallback();
+    // Graceful fallback to pre-rendered 2026 state
   }
 }
 
